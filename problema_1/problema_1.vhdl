@@ -13,10 +13,9 @@ architecture behaviour of fulladder32bits is
   signal outs : std_logic_vector(width downto 0);
   signal carries : std_logic_vector(width downto 0);
 begin
-  bucle : for i in 0 to (width - 1) generate
-    fulladder : full_adder port map (a => a(i), b => b(i), c_in => carries(i), s => outs(i), c_out => carries(i + 1));
-  end generate;
-  y <= outs;
   carries(0) <= '0';
+  bucle : for i in 0 to (width - 1) generate
+    fulladder : full_adder port map (a => a(i), b => b(i), c_in => carries(i), s => y(i), c_out => carries(i + 1));
+  end generate;
   y(width) <= carries(width);
 end architecture;

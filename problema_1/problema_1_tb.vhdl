@@ -1,5 +1,7 @@
 library ieee;
+library work;
 use ieee.std_logic_1164.all;
+use work.components.all;
 
 entity problema_1_tb is
   generic (width : positive := 32);
@@ -22,7 +24,10 @@ architecture test_bench of problema_1_tb is
   signal sa, sb : std_logic_vector((width - 1) downto 0);
   signal sy : std_logic_vector(width downto 0);
 begin
-  tb_component : fulladder32bits port map (a => sa, b => sb, y => sy);
+  -- Here you can pass as argument the
+  -- name of the architecture
+  -- that you want to use for the test bench
+  tb_component : entity work.fulladder32bits(behaviour) port map (a => sa, b => sb, y => sy);
   process
   begin
     sa <= (0 => '1', others => '0');

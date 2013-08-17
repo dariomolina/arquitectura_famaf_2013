@@ -2,6 +2,7 @@ library ieee;
 library work;
 use ieee.std_logic_1164.all;
 use work.components.all;
+use IEEE.numeric_std.all;
 
 entity fulladder32bits is
   generic (width : positive := 32);
@@ -18,4 +19,9 @@ begin
     fulladder : full_adder port map (a => a(i), b => b(i), c_in => carries(i), s => y(i), c_out => carries(i + 1));
   end generate;
   y(width) <= carries(width);
+end architecture;
+
+architecture easy_solution of fulladder32bits is
+begin
+  y <= std_logic_vector(unsigned('0' & a) + unsigned('0' & b));
 end architecture;

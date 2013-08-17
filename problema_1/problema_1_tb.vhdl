@@ -16,8 +16,7 @@ architecture test_bench of problema_1_tb is
     write (lp, bv);
     return lp.all;
   end;
-
-  component fulladder32bits
+  component adder
     port (a, b : in std_logic_vector((width - 1) downto 0);
           y : out std_logic_vector(width downto 0));
   end component;
@@ -27,7 +26,7 @@ begin
   -- Here you can pass as argument the
   -- name of the architecture
   -- that you want to use for the test bench
-  tb_component : entity work.fulladder32bits(behaviour) port map (a => sa, b => sb, y => sy);
+  tb_component : entity work.adder(behaviour) port map (a => sa, b => sb, y => sy);
   process
   begin
     sa <= (0 => '1', others => '0');

@@ -2,7 +2,7 @@ library ieee;
 library work;
 use ieee.std_logic_1164.all;
 use work.components.all;
-use IEEE.numeric_std.all;
+use ieee.numeric_std.all;
 
 entity adder is
   generic (width : positive := 32);

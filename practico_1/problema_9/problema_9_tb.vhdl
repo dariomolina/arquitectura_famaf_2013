@@ -5,10 +5,10 @@ entity problema_9_tb is
 end entity;
 
 architecture test_bench of problema_9_tb is
-  function to_string (sv: Std_Logic_Vector) return string is
-    use Std.TextIO.all;
-    variable bv: bit_vector(sv'range) := to_bitvector(sv);
-    variable lp: line;
+  function to_string (sv: std_logic_vector) return string is
+    use std.textio.all;
+    variable bv : bit_vector (sv'range) := to_bitvector (sv);
+    variable lp : line;
   begin
     write (lp, bv);
     return lp.all;

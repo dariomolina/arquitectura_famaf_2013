@@ -11,7 +11,6 @@ entity adder is
 end entity;
 
 architecture behaviour of adder is
-  signal outs : std_logic_vector(width downto 0);
   signal carries : std_logic_vector(width downto 0);
 begin
   carries(0) <= '0';

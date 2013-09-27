@@ -27,8 +27,8 @@ begin
     bucle : for i in 0 to 63 loop
       sa <= std_logic_vector(to_unsigned(i, sa'length));
       wait for 1 ns;
---      report "sa vector value: " & to_string(sa);
       assert sd = std_logic_vector(to_unsigned(i, sd'length));
+--      report "sd vector value: " & to_string(sd);
     end loop;
   end process;
 end architecture;

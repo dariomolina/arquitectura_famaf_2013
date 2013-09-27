@@ -18,7 +18,7 @@ architecture behavior of regfile is
     begin
       if (clk'event and we3 = '1') then
         memory(to_integer(unsigned(wa3))) <= wd3;
-      end if;  
+      end if;
   end process;
 
   rd1 <= memory(to_integer(unsigned(ra1)));

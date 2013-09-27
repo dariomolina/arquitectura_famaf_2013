@@ -22,7 +22,6 @@ architecture test_bench of problema_6_tb is
   signal salucontrol : std_logic_vector(2 downto 0);
   signal sa, sb, sresult : std_logic_vector(31 downto 0);
   signal szero : std_logic;
-
 begin
   tb_component : alu port map (alucontrol => salucontrol, a => sa, b => sb, zero => szero, result => sresult);
   process

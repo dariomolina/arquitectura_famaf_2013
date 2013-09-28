@@ -59,14 +59,14 @@ begin
     wait for 5 ns;
 --    report "srd vector value: " & to_string(srd);
     assert srd = "00011110000001101000100000100101";
-    sa <= "00101001000110001101010001000101";
-    wait for 5 ns;
---    report "srd vector value: " & to_string(srd);
-    assert srd = "00110001010011010010100000010010";
     sa <= "00110101000110000101001001000001";
     wait for 5 ns;
 --    report "srd vector value: " & to_string(srd);
     assert srd = "00100001110000001000101010100011";
+    sa <= "00101001000110001101010001000101";
+    wait for 5 ns;
+--    report "srd vector value: " & to_string(srd);
+    assert srd = "00110001010011010010100000010010";
     sa <= "00010100101000000110010010010101";
     wait for 5 ns;
 --    report "srd vector value: " & to_string(srd);

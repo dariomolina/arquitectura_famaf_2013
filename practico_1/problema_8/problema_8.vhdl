@@ -19,17 +19,15 @@ architecture behavior of dmem is
     return result;
   end;
   type ram is array (0 to 63) of std_logic_vector(31 downto 0);
-  signal sa : std_logic_vector(5 downto 0);
   signal memory : ram;
 begin
   process (clk, a)
   begin
-    if (valid_address(sa) = '1') then
-      sa <= a(7 downto 2);
+    if (valid_address(a(7 downto 2)) = '1') then
       if (clk'event and clk = '1' and we = '1') then
-        memory(to_integer(unsigned(sa))) <= wd;
+        memory(to_integer(unsigned(a(7 downto 2)))) <= wd;
       end if;
-      rd <= memory(to_integer(unsigned(sa)));
+      rd <= memory(to_integer(unsigned(a(7 downto 2))));
     else
       rd <= (others => 'X');
     end if;

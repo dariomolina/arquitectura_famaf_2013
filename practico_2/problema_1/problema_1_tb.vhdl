@@ -35,6 +35,7 @@ begin
   end process;
   process
   begin
+    report "test: it should read 0 from the $zero register: Ok";
     sra1 <= (others => '0');
     sra2 <= (others => '0');
     wait for 5 ns;
@@ -42,6 +43,7 @@ begin
     assert srd1 = "00000000000000000000000000000000";
 --    report "srd2 vector value: " & to_string(srd2);
     assert srd2 = "00000000000000000000000000000000";
+    report "test: it should write registers when allowed to: Ok";
     swe3 <= '1';
     swd3 <= "10000101000010100100100000101110";
     swa3 <= "10010";
@@ -58,6 +60,7 @@ begin
     assert srd1 = "00000010000011110100100101000011";
 --    report "srd2 vector value: " & to_string(srd2);
     assert srd2 = "10000101000010100100100000101110";
+    report "test: it shouldn't write registers when not allowed to: Ok";
     swa3 <= "10010";
     swd3 <= "11111111111111111111111111111111";
     wait for 5 ns;
@@ -65,5 +68,17 @@ begin
     wait for 5 ns;
 --    report "srd1 vector value: " & to_string(srd1);
     assert srd1 = "10000101000010100100100000101110";
+    report "test: it shouldn't be able to write on the $zero register: Ok";
+    swe3 <= '1';
+    swa3 <= "00000";
+    swd3 <= "11111111111111111111111111111111";
+    wait for 5 ns;
+    swe3 <= '0';
+    sra1 <= "00000";
+    wait for 5 ns;
+--    report "srd1 vector value: " & to_string(srd1);
+    assert srd1 = "00000000000000000000000000000000";
+    report "100%: PASS!!";
+    wait for 1 ns;
   end process;
 end architecture;

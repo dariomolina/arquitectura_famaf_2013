@@ -7,46 +7,63 @@ entity problema_1_tb is
 end entity;
 
 architecture test_bench of problema_1_tb is
+  function to_string (sv: std_logic_vector) return string is
+    use std.textio.all;
+    variable bv : bit_vector (sv'range) := to_bitvector (sv);
+    variable lp : line;
+  begin
+    write (lp, bv);
+    return lp.all;
+  end;
   component regfile
-    port( ra1, ra2, wa3: in std_logic_vector(4 downto 0);
-          wd3: in std_logic_vector(31 downto 0);
-          we3, clk: in std_logic;
-          rd1, rd2: out std_logic_vector(31 downto 0)
-         );
+    port(ra1, ra2, wa3: in std_logic_vector(4 downto 0);
+         wd3: in std_logic_vector(31 downto 0);
+         we3, clk: in std_logic;
+         rd1, rd2: out std_logic_vector(31 downto 0));
   end component;
-  
-  signal sra1, sra2, swa : std_logic_vector(4 downto 0);
-  signal swe, sclk  : std_logic;
-  signal swd, srd1, srd2  : std_logic_vector(31 downto 0);
-  signal memory : reg_memory;
+  signal sra1, sra2, swa3 : std_logic_vector(4 downto 0);
+  signal swe3, sclk : std_logic;
+  signal swd3, srd1, srd2 : std_logic_vector(31 downto 0);
 begin
-  tb_component : regfile port map (ra1 => sra1, ra2 => sra2, wa3 => swa, wd3 => swd, we3 => swe, clk => sclk, rd1 => srd1, rd2 => srd2);
+  tb_component : regfile port map (ra1 => sra1, ra2 => sra2, wa3 => swa3, wd3 => swd3, we3 => swe3, clk => sclk, rd1 => srd1, rd2 => srd2);
   process
-    begin
-      sclk <= '1';
-      wait for 1 ns;
-      sclk <= '0';
-      wait for 1 ns;
+  begin
+    sclk <= '1';
+    wait for 1 ns;
+    sclk <= '0';
+    wait for 1 ns;
   end process;
   process
-    begin
-      for i in 0 to 31 loop
-        report "Empieza el test!";
-        memory(i) <= std_logic_vector(to_unsigned(i, 32));
-        sra1 <= std_logic_vector(to_unsigned(i, 5));
-        sra2 <= std_logic_vector(to_unsigned(i, 5));
-        swe <= '0';
-        swd <= std_logic_vector(to_unsigned(i, 32));
-        swa <= std_logic_vector(to_unsigned(i, 5));
-        wait for 5 ns;
-        --if (sclk'event and swe = '1') then
-        --  assert memory(to_integer(unsigned(swa))) = std_logic_vector(to_unsigned(i, 32));
-        --end if;
-        srd1 <= std_logic_vector(to_unsigned(i, 32));
-        srd2 <= std_logic_vector(to_unsigned(i, 32));
-        assert srd1 = memory(i);
-        assert srd1 = memory(i);
-        report "### Paso el test ###";
-      end loop;
+  begin
+    sra1 <= (others => '0');
+    sra2 <= (others => '0');
+    wait for 5 ns;
+--    report "srd1 vector value: " & to_string(srd1);
+    assert srd1 = "00000000000000000000000000000000";
+--    report "srd2 vector value: " & to_string(srd2);
+    assert srd2 = "00000000000000000000000000000000";
+    swe3 <= '1';
+    swd3 <= "10000101000010100100100000101110";
+    swa3 <= "10010";
+    wait for 5 ns;
+    swd3 <= "00000010000011110100100101000011";
+    swa3 <= "11110";
+    wait for 5 ns;
+    swe3 <= '0';
+    wait for 5 ns;
+    sra1 <= "11110";
+    sra2 <= "10010";
+    wait for 5 ns;
+--    report "srd1 vector value: " & to_string(srd1);
+    assert srd1 = "00000010000011110100100101000011";
+--    report "srd2 vector value: " & to_string(srd2);
+    assert srd2 = "10000101000010100100100000101110";
+    swa3 <= "10010";
+    swd3 <= "11111111111111111111111111111111";
+    wait for 5 ns;
+    sra1 <= "10010";
+    wait for 5 ns;
+--    report "srd1 vector value: " & to_string(srd1);
+    assert srd1 = "10000101000010100100100000101110";
   end process;
 end architecture;

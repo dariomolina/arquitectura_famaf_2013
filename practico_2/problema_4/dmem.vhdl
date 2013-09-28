@@ -1,28 +1,65 @@
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
+library IEEE;
+use IEEE.STD_LOGIC_1164.all;
+use STD.TEXTIO.all;
+use IEEE.NUMERIC_STD.all;
 
-entity dmem is
-  port( a: in std_logic_vector(31 downto 0);
-        wd: in std_logic_vector(31 downto 0);
-        clk: in std_logic;
-        we: in std_logic;
-        rd: out std_logic_vector(31 downto 0)
+entity dmem is -- data memory
+  port(clk, we:  in STD_LOGIC;
+       a, wd:    in STD_LOGIC_VECTOR(31 downto 0);
+       rd:       out STD_LOGIC_VECTOR(31 downto 0);
+       dump: in STD_LOGIC
        );
-end entity;
+end;
 
-architecture behavior of dmem is
-  type memory_ram is array (0 to 63) of std_logic_vector(31 downto 0);
-  signal sa : std_logic_vector(5 downto 0);
-  signal ram : memory_ram;
+architecture behave of dmem is
+  constant MEMORY_DUMP_FILE: string := "output.dump";
+  constant MAX_BOUND: Integer := 64;
+
+  type ramtype is array (MAX_BOUND-1 downto 0) of STD_LOGIC_VECTOR(31 downto 0);
+  signal mem: ramtype;
+
+  procedure memDump is
+    file dumpfile : text open write_mode is MEMORY_DUMP_FILE;
+    variable dumpline : line;
+    variable i: natural := 0;
   begin
-  -- descarto los bits de 32..8 y 1..0, es decir me quedo con los bits del 2..7
-    sa <= a (7 downto 2);
-    process (clk)
-      begin
-      if (clk'event and we = '1') then
-        ram(to_integer(unsigned(a))) <= wd;
+    write(dumpline, string'("Memoria RAM de Mips:"));
+    writeline(dumpfile,dumpline);
+    write(dumpline, string'("Address Data"));
+    writeline(dumpfile,dumpline);
+    while i <= MAX_BOUND-1 loop
+      write(dumpline, i);
+      write(dumpline, string'(" "));
+      write(dumpline, to_integer(unsigned(mem(i))));
+      writeline(dumpfile,dumpline);
+      i:=i+1;
+    end loop;
+  end procedure memDump;
+
+  function valid_address(arg: std_logic_vector) return std_logic is
+    variable result: std_logic;
+  begin
+    result := '0';
+    for i in arg'range loop
+      result := result or arg(i) or (not arg(i));
+    end loop;
+    return result;
+  end;
+begin
+  process(clk, a, mem)
+  begin
+    if (valid_address(a) = '1') then
+      if clk'event and clk = '1' and we = '1' then
+        mem(to_integer(unsigned(a(7 downto 2)))) <= wd;
       end if;
-    end process;
-    rd <= ram(to_integer(unsigned(a)));
-end architecture;
+      rd <= mem(to_integer(unsigned(a(7 downto 2)))); -- word aligned
+    end if;
+  end process;
+
+  process(dump)
+  begin
+    if dump = '1' then
+      memDump;
+    end if;
+  end process;
+end;

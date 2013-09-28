@@ -22,11 +22,11 @@ architecture behavior of dmem is
   signal sa : std_logic_vector(5 downto 0);
   signal memory : ram;
 begin
-  process (clk)
+  process (clk, a)
   begin
     if (valid_address(sa) = '1') then
       sa <= a(7 downto 2);
-      if (clk'event and we = '1') then
+      if (clk'event and clk = '1' and we = '1') then
         memory(to_integer(unsigned(sa))) <= wd;
       end if;
       rd <= memory(to_integer(unsigned(sa)));

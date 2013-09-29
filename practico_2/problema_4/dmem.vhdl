@@ -88,10 +88,6 @@ begin
 
   process (clk, a, mem)
   begin
-    report "address: " & to_hex_string(a);
-    report "write data: " & to_hex_string(wd);
-    report "write enabled: " & std_logic'image(we);
-    report "----------------------------------";
     if (valid_address(a) = '1') then
       if clk'event and clk = '1' and we = '1' then
         mem(to_integer(unsigned(a(7 downto 2)))) <= wd;

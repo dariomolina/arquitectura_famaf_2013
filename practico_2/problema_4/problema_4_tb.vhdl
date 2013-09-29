@@ -98,9 +98,10 @@ begin
     assert spc = "00000000000000000000000000011100";
     -- Instruction = 0x200f0007
     assert sinstr = "00100000000011110000000000000111";
+    wait for 2 ns;
     sMemWrite <= '1';
     sRegWrite <= '0';
-    wait for 2 ns;
+    wait for 1 ns;
     -- PC = 0x00000020
     assert spc = "00000000000000000000000000100000";
     -- Instruction = 0xac080000

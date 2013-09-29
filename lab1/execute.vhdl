@@ -7,7 +7,8 @@ entity execute is
 
   port (RtE, RdE : in  std_logic_vector(4 downto 0);
         RD1E, RD2E, PCPlus4E, SignlmmE : in std_logic_vector(31 downto 0);
-        RegDst, AluSrc, AluControl : in std_logic;
+        RegDst, AluSrc : in std_logic;
+        AluControl : in std_logic_vector(2 downto 0);
         WriteRegE : out std_logic_vector(4 downto 0);
         ZeroE : out std_logic;
         AluOutE, WriteDataE, PCBranchE : out std_logic_vector(31 downto 0));
@@ -30,10 +31,9 @@ begin
 
   sl2PCBranch : sl2 port map (a => SignlmmE, y => Sl2Adder);
 
- -- El AluControl de entrada es un std_logic, la alu espera un vector 2 dt 0.
   ALUMIPS : alu port map (alucontrol => AluControl, a => RD1E, b => SrcB,
                           zero => ZeroE, result => AluOutE);
 
-  adder2 : adder port map (a => Sl2Adder, b => PCPlus4E, y => PCBranchE);
+  addPcBranch : adder port map (a => Sl2Adder, b => PCPlus4E, y => PCBranchE);
 
 end architecture;

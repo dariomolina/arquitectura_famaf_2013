@@ -69,4 +69,42 @@ package components is
     port (a : in std_logic_vector ((width - 1) downto 0);
           y : out std_logic_vector ((width - 1) downto 0));
   end component;
+
+  component fetch is
+      port (Jump, PcSrcM, clk, reset : in std_logic;
+            PcBranchM : in std_logic_vector(31 downto 0);
+            InstrF, PCF, PcPlus4F : out std_logic_vector(31 downto 0));
+  end component;
+
+  component decode is
+    port (InstrD, Wd3, PcBranchM : in std_logic_vector(31 downto 0);
+        A3 : in std_logic_vector(4 downto 0);
+        clk, RegWrite : in std_logic;
+        SignlmmD, RD1D, RD2D : out std_logic_vector(31 downto 0));
+  end component;
+
+  component execute is
+    port (RtE, RdE : in  std_logic_vector(4 downto 0);
+      RD1E, RD2E, PCPlus4E, SignlmmE : in std_logic_vector(31 downto 0);
+      RegDst, AluSrc : in std_logic;
+      AluControl : in std_logic_vector(2 downto 0);
+      WriteRegE : out std_logic_vector(4 downto 0);
+      ZeroE : out std_logic;
+      AluOutE, WriteDataE, PCBranchE : out std_logic_vector(31 downto 0));
+  end component;
+
+  component memory is
+    port (AluOutM, WriteDataM : in std_logic_vector(31 downto 0);
+          MemWrite, Branch, ZeroM, clk, dump : in std_logic;
+          PcSrcM : out std_logic;
+          ReadDataM : out std_logic_vector(31 downto 0));
+  end component;
+
+  component writeback is
+    port (MemToReg : in std_logic;                  
+       AluOutW, ReadDataW : in std_logic_vector(31 downto 0);
+       ResultW : out std_logic_vector(31 downto 0));
+  end component;
+
+
 end package;

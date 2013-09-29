@@ -15,7 +15,7 @@ end entity;
 architecture behavior of memory is
 begin
 
-  --PCSrcM <= ALGO FALTA;
+  PCSrcM <= Branch and ZeroM;
 
   memMIPS : dmem port map (a => AluOutM, wd => WriteDataM,
                            clk => clk, we => MemWrite, rd => ReadDataM, dump => dump);

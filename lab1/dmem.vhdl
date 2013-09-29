@@ -79,7 +79,7 @@ architecture behave of dmem is
   begin
     report "------ Memoria RAM de Mips ------";
     report "Address Data";
-    while i <= MAX_BOUND-1 loop
+    while i <= 9-1 loop
       report integer'image(i);
       report to_hex_string(mem(i));
       report "-----------------";
@@ -103,8 +103,10 @@ begin
   begin
     if (valid_address(a) = '1') then
       if clk'event and clk = '1' and we = '1' then
---        report "Write Data: " & to_hex_string(wd);
         mem(to_integer(unsigned(a(7 downto 2)))) <= wd;
+--        report "Position: " & integer'image(to_integer(unsigned(a(7 downto 2))));
+--        report "Write Data: " & to_hex_string(wd);
+--        log_memory_dump;
       end if;
       rd <= mem(to_integer(unsigned(a(7 downto 2)))); -- word aligned
     end if;

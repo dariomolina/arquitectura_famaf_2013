@@ -1,7 +1,7 @@
 all: run
 
 run: problema_4_tb
-	ghdl -r problema_4_tb --stop-time=35ns --vcd=problema_4.vcd
+	ghdl -r problema_4_tb --stop-time=50ns --vcd=problema_4.vcd
 
 problema_4_tb: problema_4 problema_4_tb.vhdl
 	ghdl -a problema_4_tb.vhdl

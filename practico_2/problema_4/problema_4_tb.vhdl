@@ -48,6 +48,14 @@ begin
 
   process
   begin
+    sAluControl <= "010";
+    sJump <= '0';
+    sBranch <= '0';
+    sAluSrc <= '1';
+    sMemToReg <= '0';
+    sMemWrite <= '0';
+    sRegWrite <= '1';
+    sRegDst <= '0';
     sreset <= '1';
     wait for 3 ns;
     -- PC = 0x00000000
@@ -55,7 +63,6 @@ begin
     -- Instruction = 0x20080000
     assert sinstr = "00100000000010000000000000000000";
     sreset <= '0';
-    sJump <= '0';
     wait for 2 ns;
     -- PC = 0x00000004
     assert spc = "00000000000000000000000000000100";
@@ -91,6 +98,8 @@ begin
     assert spc = "00000000000000000000000000011100";
     -- Instruction = 0x200f0007
     assert sinstr = "00100000000011110000000000000111";
+    sMemWrite <= '1';
+    sRegWrite <= '0';
     wait for 2 ns;
     -- PC = 0x00000020
     assert spc = "00000000000000000000000000100000";
@@ -132,6 +141,13 @@ begin
     -- Instruction = 0xac0f001c
     assert sinstr = "10101100000011110000000000011100";
     sdump <= '1';
+    wait for 5 ns;
+    sreset <= '1';
+    wait for 3 ns;
+    -- PC = 0x00000000
+    assert spc = "00000000000000000000000000000000";
+    -- Instruction = 0x20080000
+    assert sinstr = "00100000000010000000000000000000";
   end process;
 
 end architecture;

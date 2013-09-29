@@ -22,11 +22,11 @@ architecture behavior of datapath is
 
 begin
 
-  PCPlus4 <= TmpAdder1(31 downto 0);
-  PCBranch <= TmpAdder2(31 downto 0);
   pc <= PC1;
   instr <= Instruction;
   PCSrc <= Branch and Zero;
+  PCPlus4 <= TmpAdder1(31 downto 0);
+  PCBranch <= TmpAdder2(31 downto 0);
   PCJump <= PCPlus4(31 downto 28) & Instruction(25 downto 0) & "00";
 
   muxPC : mux2 port map (s => PCSrc, d0 => PCPlus4,

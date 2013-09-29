@@ -10,6 +10,16 @@ entity regfile is
 end regfile;
 
 architecture behavior of regfile is
+
+  function to_string (sv: std_logic_vector) return string is
+    use std.textio.all;
+    variable bv : bit_vector (sv'range) := to_bitvector (sv);
+    variable lp : line;
+  begin
+    write (lp, bv);
+    return lp.all;
+  end;
+
   function valid_address(arg: std_logic_vector) return std_logic is
     variable result: std_logic;
   begin
@@ -19,9 +29,12 @@ architecture behavior of regfile is
     end loop;
     return result;
   end;
+
   type reg_memory is array (0 to 31) of std_logic_vector(31 downto 0);
   signal memory : reg_memory;
+
 begin
+
   process (clk, ra1, ra2)
   begin
     if (valid_address(wd3) = '1') then

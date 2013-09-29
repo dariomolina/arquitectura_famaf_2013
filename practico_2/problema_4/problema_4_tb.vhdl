@@ -39,6 +39,17 @@ begin
 
   process
   begin
+    sclk <= '1';
+    wait for 1 ns;
+    sclk <= '0';
+    wait for 1 ns;
+  end process;
+  process
+  begin
+    sMemWrite <= '1';
+    sreset <= '1';
     wait for 5 ns;
+    sdump <= '1';
+    wait for 145 ns;
   end process;
 end architecture;

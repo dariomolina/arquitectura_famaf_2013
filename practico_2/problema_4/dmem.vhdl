@@ -74,6 +74,19 @@ architecture behave of dmem is
     end loop;
   end procedure memDump;
 
+  procedure log_memory_dump is
+    variable i: natural := 0;
+  begin
+    report "------ Memoria RAM de Mips ------";
+    report "Address Data";
+    while i <= MAX_BOUND-1 loop
+      report integer'image(i);
+      report to_hex_string(mem(i));
+      report "-----------------";
+      i := i + 1;
+    end loop;
+  end procedure log_memory_dump;
+
   function valid_address(arg: std_logic_vector) return std_logic is
     variable result: std_logic;
   begin
@@ -86,21 +99,19 @@ architecture behave of dmem is
 
 begin
 
-  process (clk, a, mem)
+  process (clk, a, mem, dump)
   begin
     if (valid_address(a) = '1') then
       if clk'event and clk = '1' and we = '1' then
+--        report "Write Data: " & to_hex_string(wd);
         mem(to_integer(unsigned(a(7 downto 2)))) <= wd;
       end if;
       rd <= mem(to_integer(unsigned(a(7 downto 2)))); -- word aligned
     end if;
-  end process;
 
-  process (dump)
-  begin
     if dump = '1' then
       memDump;
+--      log_memory_dump;
     end if;
   end process;
-
 end;

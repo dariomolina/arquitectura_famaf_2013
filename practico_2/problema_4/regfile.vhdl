@@ -39,7 +39,7 @@ begin
   begin
     if (valid_address(wd3) = '1') then
       if (clk'event and clk = '1' and we3 = '1') then
-        if (wd3 /= "00000000000000000000000000000000") then
+        if (wa3 /= "00000000000000000000000000000000") then
           memory(to_integer(unsigned(wa3))) <= wd3;
         end if;
       end if;

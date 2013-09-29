@@ -13,15 +13,11 @@ entity memory is
 end entity;
 
 architecture behavior of memory is
-
-  signal ReadData : std_logic_vector(31 downto 0);
-
 begin
 
-  ReadDataM <= ReadData;
-  PCSrcM <= ALGO FALTA;
+  --PCSrcM <= ALGO FALTA;
 
   memMIPS : dmem port map (a => AluOutM, wd => WriteDataM,
-                           clk => clk, we => MemWrite, rd => ReadData, dump => dump);
+                           clk => clk, we => MemWrite, rd => ReadDataM, dump => dump);
 
 end architecture;

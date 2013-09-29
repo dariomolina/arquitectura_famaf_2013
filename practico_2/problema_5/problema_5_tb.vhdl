@@ -125,6 +125,12 @@ begin
     assert sinstr = "10101100000011110000000000011100";
     sdump <= '1';
     wait for 5 ns;
+    sreset <= '1';
+    wait for 3 ns;
+    -- PC = 0x00000000
+    assert spc = "00000000000000000000000000000000";
+    -- Instruction = 0x20080000
+    assert sinstr = "00100000000010000000000000000000";
   end process;
 
 end architecture;

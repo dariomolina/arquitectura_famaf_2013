@@ -1,7 +1,7 @@
 all: run
 
 run: problema_4_tb
-	ghdl -r problema_4_tb --stop-time=150ns --vcd=problema_4.vcd
+	ghdl -r problema_4_tb --stop-time=35ns --vcd=problema_4.vcd
 
 problema_4_tb: problema_4 problema_4_tb.vhdl
 	ghdl -a problema_4_tb.vhdl
@@ -21,7 +21,7 @@ adder: components full_adder adder.vhdl
 
 flopr: components flip_flop flopr.vhdl
 	ghdl -a flopr.vhdl
-	
+
 flip_flop: flip_flop.vhdl
 	ghdl -a flip_flop.vhdl
 
@@ -51,3 +51,4 @@ clean:
 	rm -rf *.o
 	rm -rf *.cf
 	rm -rf *.vcd
+	rm -rf *.dump

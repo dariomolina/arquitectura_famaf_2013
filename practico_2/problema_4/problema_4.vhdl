@@ -19,13 +19,14 @@ architecture behavior of datapath is
   signal PC1, WriteReg, WriteData, SrcA, SrcB, Result, Signlmm : std_logic_vector(31 downto 0);
   signal Sl2Adder, ReadData, Instruction, ALUResult : std_logic_vector(31 downto 0);
   signal TmpAdder1, TmpAdder2 : std_logic_vector(32 downto 0);
+
 begin
 
   PCPlus4 <= TmpAdder1(31 downto 0);
   PCBranch <= TmpAdder2(31 downto 0);
-  pc     <= PCNext;
-  instr  <= Instruction;
-  PCSrc  <= Branch and Zero;
+  pc <= PC1;
+  instr <= Instruction;
+  PCSrc <= Branch and Zero;
   PCJump <= PCPlus4(31 downto 28) & Instruction(25 downto 0) & "00";
 
   muxPC : mux2 port map (s => PCSrc, d0 => PCPlus4,

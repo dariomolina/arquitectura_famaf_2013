@@ -2,85 +2,38 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 entity maindec is
-    port (
-          Op         : in  std_logic_vector(5 downto 0);
-          MemToReg   : out std_logic;
-          MemWrite   : out std_logic;
-          Branch     : out std_logic;
-          AluSrc     : out std_logic;
-          RegDst     : out std_logic;
-          RegWrite   : out std_logic;
-          Jump       : out std_logic;
-          Aluop      : out std_logic_vector(1 downto 0));
+  port (Op       : in  std_logic_vector(5 downto 0);
+        MemToReg : out std_logic;
+        MemWrite : out std_logic;
+        Branch   : out std_logic;
+        AluSrc   : out std_logic;
+        RegDst   : out std_logic;
+        RegWrite : out std_logic;
+        Jump     : out std_logic;
+        AluOp    : out std_logic_vector(1 downto 0));
 end entity;
 
-architecture ar_maindec of maindec is
-    begin
-        process (Op)
-        begin
-            if (Op = "000000") then
-                RegWrite <= '1';
-                RegDst   <= '1';
-                AluSrc   <= '0';
-                Branch   <= '0';
-                MemWrite <= '0';
-                MemToReg <= '0';
-                Jump     <= '0';
-                AluOp    <= "10";
-            elsif (Op = "100011") then
-                RegWrite <= '1';
-                RegDst   <= '0';
-                AluSrc   <= '1';
-                Branch   <= '0';
-                MemWrite <= '0';
-                MemToReg <= '1';
-                Jump     <= '0';
-                AluOp    <= "00";
-            elsif (Op = "101011") then
-                RegWrite <= '0';
-                RegDst   <= '0';
-                AluSrc   <= '1';
-                Branch   <= '0';
-                MemWrite <= '1';
-                MemToReg <= '0';
-                Jump     <= '0';
-                AluOp    <= "00";
-            elsif (Op = "000100") then
-                RegWrite <= '0';
-                RegDst   <= '0';
-                AluSrc   <= '0';
-                Branch   <= '1';
-                MemWrite <= '0';
-                MemToReg <= '0';
-                Jump     <= '0';
-                AluOp    <= "10";
-            elsif (Op = "001000") then
-                RegWrite <= '1';
-                RegDst   <= '0';
-                AluSrc   <= '1';
-                Branch   <= '0';
-                MemWrite <= '0';
-                MemToReg <= '0';
-                Jump     <= '0';
-                AluOp    <= "00";
-            elsif (Op = "000010") then
-                RegWrite <= '0';
-                RegDst   <= '0';
-                AluSrc   <= '0';
-                Branch   <= '0';
-                MemWrite <= '0';
-                MemToReg <= '0';
-                Jump     <= '1';
-                AluOp    <= "00";
-            else
-                RegWrite <= '0';
-                RegDst   <= '0';
-                AluSrc   <= '0';
-                Branch   <= '0';
-                MemWrite <= '0';
-                MemToReg <= '0';
-                Jump     <= '0';
-                AluOp    <= "00";
-            end if;
-        end process;
+architecture behavior of maindec is
+begin
+  process (Op)
+    variable tmp : std_logic_vector(8 downto 0);
+  begin
+    case Op is
+      when "000000" => tmp := "110000010";
+      when "100011" => tmp := "101001000";
+      when "101011" => tmp := "001010000";
+      when "000100" => tmp := "000100001";
+      when "001000" => tmp := "101000000";
+      when "000010" => tmp := "000000100";
+      when others   => tmp := "---------";
+    end case;
+    RegWrite <= tmp(8);
+    RegDst   <= tmp(7);
+    AluSrc   <= tmp(6);
+    Branch   <= tmp(5);
+    MemWrite <= tmp(4);
+    MemToReg <= tmp(3);
+    Jump     <= tmp(2);
+    AluOp    <= tmp(1 downto 0);
+  end process;
 end architecture;

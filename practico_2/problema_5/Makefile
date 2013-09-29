@@ -7,14 +7,23 @@ problema_5_tb: problema_5 problema_5_tb.vhdl
 	ghdl -a problema_5_tb.vhdl
 	ghdl -e problema_5_tb
 
-problema_5: components datapath controller problema_5.vhdl
+problema_5: components controller datapath problema_5.vhdl
 	ghdl -a problema_5.vhdl
 
 datapath: components adder flopr alu imem dmem mux2 sl2 regfile signext datapath.vhdl
 	ghdl -a datapath.vhdl
 
+controller: components aludec maindec controller.vhdl
+	ghdl -a controller.vhdl
+
 components: components.vhdl
 	ghdl -a components.vhdl
+
+aludec: aludec.vhdl
+	ghdl -a aludec.vhdl
+
+maindec: maindec.vhdl
+	ghdl -a maindec.vhdl
 
 full_adder: full_adder.vhdl
 	ghdl -a full_adder.vhdl
@@ -24,6 +33,7 @@ adder: components full_adder adder.vhdl
 
 flopr: components flip_flop flopr.vhdl
 	ghdl -a flopr.vhdl
+
 
 flip_flop: flip_flop.vhdl
 	ghdl -a flip_flop.vhdl
@@ -49,17 +59,9 @@ regfile: regfile.vhdl
 signext: signext.vhdl
 	ghdl -a signext.vhdl
 
-controller: components maindec aludec controller.vhdl
-	ghdl -a controller.vhdl
-
-maindec: maindec.vhdl
-	ghdl -a maindec.vhdl
-
-aludec: aludec.vhdl
-	ghdl -a aludec.vhdl
-
 clean:
 	rm -f *_tb
 	rm -rf *.o
 	rm -rf *.cf
 	rm -rf *.vcd
+	rm -rf *.dump

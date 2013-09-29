@@ -10,7 +10,7 @@ end entity;
 
 architecture behaviour of mux2 is
 begin
-  process (s)
+  process (s, d0, d1)
   begin
     if (s = '0') then
       y <= d0;

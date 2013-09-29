@@ -95,6 +95,7 @@ begin
       end loop;
       mem(index) := std_logic_vector(result);
 --      report to_hex_string(mem(index));
+--      report to_string(mem(index));
       index := index + 1;
     end loop;
 --    report "--- Instruction Memory ---";

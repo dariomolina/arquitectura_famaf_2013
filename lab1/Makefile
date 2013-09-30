@@ -1,14 +1,14 @@
 all: run
 
-run: lab_1_tb
-	ghdl -r lab_1_tb --stop-time=50ns --vcd=lab_1.vcd
+run: datapath_tb
+	ghdl -r datapath_tb --stop-time=150ns --vcd=datapath.vcd
 
-lab_1_tb: lab_1 lab_1_tb.vhdl
-	ghdl -a lab_1_tb.vhdl
-	ghdl -e lab_1_tb
+datapath_tb: datapath datapath_tb.vhdl
+	ghdl -a datapath_tb.vhdl
+	ghdl -e datapath_tb
 
-lab_1: components fetch decode execute memory write_back adder flopr alu imem dmem mux2 sl2 regfile signext lab_1.vhdl
-	ghdl -a lab_1.vhdl
+datapath: components fetch decode execute memory write_back adder flopr alu imem dmem mux2 sl2 regfile signext datapath.vhdl
+	ghdl -a datapath.vhdl
 
 fetch: components fetch.vhdl
 	ghdl -a fetch.vhdl

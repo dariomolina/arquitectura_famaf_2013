@@ -1,20 +1,23 @@
-library IEEE;
-use IEEE.STD_LOGIC_1164.all;
-use STD.TEXTIO.all;
-use IEEE.NUMERIC_STD.all;
+library ieee;
+use std.textio.all;
+use ieee.numeric_std.all;
+use ieee.std_logic_1164.all;
 
-entity dmem is -- data memory
-  port(clk, we:  in STD_LOGIC;
-       a, wd:    in STD_LOGIC_VECTOR(31 downto 0);
-       rd:       out STD_LOGIC_VECTOR(31 downto 0);
-       dump: in STD_LOGIC);
+entity dmem is
+
+  port(clk, we, dump : in std_logic;
+       a: in std_logic_vector(31 downto 0);
+       wd: in std_logic_vector(31 downto 0);
+       rd: out std_logic_vector(31 downto 0));
+
 end;
 
 architecture behave of dmem is
-  constant MEMORY_DUMP_FILE: string := "output.dump";
-  constant MAX_BOUND: Integer := 64;
 
-  type ramtype is array (MAX_BOUND-1 downto 0) of STD_LOGIC_VECTOR(31 downto 0);
+  constant MAX_BOUND: integer := 64;
+  constant MEMORY_DUMP_FILE: string := "output.dump";
+
+  type ramtype is array (MAX_BOUND-1 downto 0) of std_logic_vector(31 downto 0);
   signal mem: ramtype;
 
   function to_string (sv: std_logic_vector) return string is
@@ -27,9 +30,9 @@ architecture behave of dmem is
   end;
 
   function to_hex_string (s: std_logic_vector) return string is
-    constant s_norm: std_logic_vector(4 to s'length + 3) := s;
-    variable result : string (1 to s'length/4);
     subtype slv4 is std_logic_vector(1 to 4);
+    variable result : string (1 to s'length/4);
+    constant s_norm: std_logic_vector(4 to s'length + 3) := s;
   begin
     assert (s'length mod 4) = 0;
     for i in result'range loop
@@ -62,14 +65,14 @@ architecture behave of dmem is
     variable i: natural := 0;
   begin
     write(dumpline, string'("Memoria RAM de Mips:"));
-    writeline(dumpfile,dumpline);
+    writeline(dumpfile, dumpline);
     write(dumpline, string'("Address Data"));
-    writeline(dumpfile,dumpline);
-    while i <= MAX_BOUND-1 loop
+    writeline(dumpfile, dumpline);
+    while i <= MAX_BOUND - 1 loop
       write(dumpline, i);
       write(dumpline, string'(" "));
       write(dumpline, to_hex_string(mem(i)));
-      writeline(dumpfile,dumpline);
+      writeline(dumpfile, dumpline);
       i:=i+1;
     end loop;
   end procedure memDump;
@@ -79,7 +82,7 @@ architecture behave of dmem is
   begin
     report "------ Memoria RAM de Mips ------";
     report "Address Data";
-    while i <= 9-1 loop
+    while i <= MAX_BOUND - 1 loop
       report integer'image(i);
       report to_hex_string(mem(i));
       report "-----------------";
@@ -101,19 +104,22 @@ begin
 
   process (clk, a, mem, dump)
   begin
+
     if (valid_address(a) = '1') then
       if clk'event and clk = '1' and we = '1' then
         mem(to_integer(unsigned(a(7 downto 2)))) <= wd;
---        report "Position: " & integer'image(to_integer(unsigned(a(7 downto 2))));
---        report "Write Data: " & to_hex_string(wd);
---        log_memory_dump;
+        -- report "Position: " & integer'image(to_integer(unsigned(a(7 downto 2))));
+        -- report "Write Data: " & to_hex_string(wd);
+        -- log_memory_dump;
       end if;
       rd <= mem(to_integer(unsigned(a(7 downto 2)))); -- word aligned
     end if;
 
     if dump = '1' then
       memDump;
---      log_memory_dump;
+      -- log_memory_dump;
     end if;
+
   end process;
+
 end;

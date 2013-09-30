@@ -2,10 +2,10 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity lab_1_tb is
+entity datapath_tb is
 end entity;
 
-architecture test_bench of lab_1_tb is
+architecture test_bench of datapath_tb is
 
   function to_string (sv: std_logic_vector) return string is
     use std.textio.all;
@@ -40,14 +40,17 @@ begin
 
   process
   begin
+
     sclk <= '1';
     wait for 1 ns;
     sclk <= '0';
     wait for 1 ns;
+
   end process;
 
   process
   begin
+
     sAluControl <= "010";
     sJump <= '0';
     sBranch <= '0';
@@ -149,6 +152,7 @@ begin
     assert spc = "00000000000000000000000000000000";
     -- Instruction = 0x20080000
     assert sinstr = "00100000000010000000000000000000";
+
   end process;
 
 end architecture;

@@ -1,15 +1,18 @@
 library ieee;
-use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use ieee.std_logic_1164.all;
 
 entity alu is
-  port (alucontrol : in std_logic_vector(2 downto 0);
+
+  port (zero : out std_logic;
         a, b : in std_logic_vector(31 downto 0);
-        zero : out std_logic;
-        result : out std_logic_vector(31 downto 0));
+        result : out std_logic_vector(31 downto 0);
+        alucontrol : in std_logic_vector(2 downto 0));
+
 end entity;
 
 architecture behaviour of alu is
+
   function or_reduce(arg: std_logic_vector) return std_logic is
     variable result: std_logic;
   begin
@@ -19,10 +22,15 @@ architecture behaviour of alu is
     end loop;
     return result;
   end;
+
 begin
+
   process (alucontrol, a, b)
+
     variable res : std_logic_vector(31 downto 0);
+
   begin
+
     case alucontrol is
       when "000" => res := a and b;
       when "001" => res := a or b;
@@ -42,5 +50,7 @@ begin
       zero <= '0';
     end if;
     result <= res;
+
   end process;
+
 end architecture;

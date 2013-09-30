@@ -24,12 +24,12 @@ begin
   PCSrc <= Branch and Zero;
   PCJump <= PCPlus4(31 downto 28) & Instruction(25 downto 0) & "00";
 
-  FetchSeg     : fetch      port map (Jump => Jump, PcSrcM => PCSrc, clk => clk, reset => reset,
-                                      PcBranchM => PCBranch, InstrF => Instruction,
-                                      PCF => PC , PcPlus4F => PCPlus4);
+  FetchSeg     : fetch     port map (Jump => Jump, PcSrcM => PCSrc, clk => clk, reset => reset,
+                                     PcBranchM => PCBranch, InstrF => Instruction,
+                                     PCF => PC , PcPlus4F => PCPlus4);
 
   DecodeSeg    : decode    port map (InstrD => Instruction, Wd3 => ResultW,
-                                     A3=> WriteReg(4 downto 0), clk => clk, RegWrite => RegWrite,
+                                     A3 => WriteReg(4 downto 0), clk => clk, RegWrite => RegWrite,
                                      SignlmmD => Signlmm, RD1D => rd1, RD2D => rd2);
 
   ExecuteSeg   : execute   port map (RtE => Instruction(20 downto 16), RdE => Instruction(15 downto 11),

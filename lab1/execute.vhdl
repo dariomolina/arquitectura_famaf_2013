@@ -18,10 +18,12 @@ end entity;
 architecture behavior of execute is
 
   signal Sl2Adder, SrcB : std_logic_vector(31 downto 0);
+  signal adderaux : std_logic_vector(32 downto 0);
 
 begin
 
   WriteDataE <= RD2E;
+  PCBranchE <= adderaux(31 downto 0);
 
   muxReg : mux2 generic map (width => 5) port map (s => RegDst, d0 => RtE,
                                                    d1 => RdE, y => WriteRegE);
@@ -34,6 +36,6 @@ begin
   ALUMIPS : alu port map (alucontrol => AluControl, a => RD1E, b => SrcB,
                           zero => ZeroE, result => AluOutE);
 
-  addPcBranch : adder port map (a => Sl2Adder, b => PCPlus4E, y => PCBranchE);
+  addPcBranch : adder port map (a => Sl2Adder, b => PCPlus4E, y => adderaux);
 
 end architecture;

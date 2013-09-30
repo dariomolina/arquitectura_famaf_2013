@@ -1,13 +1,25 @@
 all: run
 
-run: datapath_tb
-	ghdl -r datapath_tb --stop-time=150ns --vcd=datapath.vcd
+run: mips_tb
+	ghdl -r mips_tb --stop-time=150ns --vcd=mips.vcd
 
-datapath_tb: datapath datapath_tb.vhdl
-	ghdl -a datapath_tb.vhdl
-	ghdl -e datapath_tb
+mips_tb: mips mips_tb.vhdl
+	ghdl -a mips_tb.vhdl
+	ghdl -e mips_tb
 
-datapath: components fetch decode execute memory write_back adder flopr alu imem dmem mux2 sl2 regfile signext datapath.vhdl
+mips: components controller maindec aludec fetch decode execute memory write_back adder flopr alu imem dmem mux2 sl2 regfile signext datapath mips.vhdl
+	ghdl -a mips.vhdl
+
+maindec: maindec.vhdl
+	ghdl -a maindec.vhdl
+
+aludec: aludec.vhdl
+	ghdl -a aludec.vhdl
+
+controller: components controller.vhdl
+	ghdl -a controller.vhdl
+
+datapath: components datapath.vhdl
 	ghdl -a datapath.vhdl
 
 fetch: components fetch.vhdl

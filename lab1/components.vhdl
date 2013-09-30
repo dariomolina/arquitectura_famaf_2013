@@ -3,6 +3,42 @@ use ieee.std_logic_1164.all;
 
 package components is
 
+  component controller is
+
+    port(Op : in std_logic_vector(5 downto 0);
+         Funct : in std_logic_vector(5 downto 0);
+         MemToReg, MemWrite, Branch : out std_logic;
+         AluSrc, RegDst, RegWrite, Jump : out std_logic;
+         AluControl : out std_logic_vector(2 downto 0));
+
+  end component;
+
+  component maindec is
+
+    port (Op : in std_logic_vector(5 downto 0);
+          RegDst, RegWrite, Jump : out std_logic;
+          AluOp : out std_logic_vector(1 downto 0);
+          MemToReg, MemWrite, Branch, AluSrc : out std_logic);
+
+  end component;
+
+  component aludec is
+
+    port (funct : in std_logic_vector(5 downto 0);
+          aluop : in std_logic_vector(1 downto 0);
+          alucontrol : out std_logic_vector(2 downto 0));
+
+  end component;
+
+  component datapath is
+
+    port(AluControl : in std_logic_vector(2 downto 0);
+         pc, instr : out std_logic_vector(31 downto 0);
+         RegDst, RegWrite, Jump, dump, clk : in std_logic;
+         MemToReg, MemWrite, Branch, AluSrc, reset : in std_logic);
+
+  end component;
+
   component fetch is
 
     port (Jump, PcSrcM, clk, reset : in std_logic;
@@ -80,6 +116,7 @@ package components is
          a: in std_logic_vector(31 downto 0);
          wd: in std_logic_vector(31 downto 0);
          rd: out std_logic_vector(31 downto 0));
+
 
   end component;
 

@@ -2,10 +2,10 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity datapath_tb is
+entity mips_tb is
 end entity;
 
-architecture test_bench of datapath_tb is
+architecture test_bench of mips_tb is
 
   function to_string (sv: std_logic_vector) return string is
     use std.textio.all;
@@ -16,49 +16,31 @@ architecture test_bench of datapath_tb is
     return lp.all;
   end;
 
-  component datapath
+  component mips
 
-    port(MemToReg, MemWrite, Branch, AluSrc, reset : in std_logic;
-         RegDst, RegWrite, Jump, dump, clk : in std_logic;
-         AluControl : in std_logic_vector(2 downto 0);
-         pc, instr : out std_logic_vector(31 downto 0));
+    port (reset, clk, dump : in std_logic;
+          pc, instr : out std_logic_vector(31 downto 0));
 
   end component;
 
-  signal sMemToReg, sMemWrite, sBranch, sAluSrc, sreset : std_logic;
-  signal sRegDst, sRegWrite, sJump, sdump, sclk : std_logic;
-  signal sAluControl : std_logic_vector(2 downto 0);
+  signal sreset, sclk, sdump : std_logic;
   signal spc, sinstr : std_logic_vector(31 downto 0);
 
 begin
 
-  tb_component : datapath port map (MemToReg => sMemToReg, MemWrite => sMemWrite,
-                                    Branch => sBranch, AluSrc => sAluSrc, reset => sreset,
-                                    RegDst => sRegDst, RegWrite => sRegWrite, Jump => sJump,
-                                    dump => sdump, clk => sclk, AluControl => sAluControl,
-                                    pc => spc, instr => sinstr);
+  tb_component : mips port map (reset => sreset, clk => sclk, dump => sdump,
+                                pc => spc, instr => sinstr);
 
   process
   begin
-
     sclk <= '1';
     wait for 1 ns;
     sclk <= '0';
     wait for 1 ns;
-
   end process;
 
   process
   begin
-
-    sAluControl <= "010";
-    sJump <= '0';
-    sBranch <= '0';
-    sAluSrc <= '1';
-    sMemToReg <= '0';
-    sMemWrite <= '0';
-    sRegWrite <= '1';
-    sRegDst <= '0';
     sreset <= '1';
     wait for 3 ns;
     -- PC = 0x00000000
@@ -102,9 +84,6 @@ begin
     -- Instruction = 0x200f0007
     assert sinstr = "00100000000011110000000000000111";
     wait for 2 ns;
-    sMemWrite <= '1';
-    sRegWrite <= '0';
-    wait for 1 ns;
     -- PC = 0x00000020
     assert spc = "00000000000000000000000000100000";
     -- Instruction = 0xac080000
@@ -152,7 +131,6 @@ begin
     assert spc = "00000000000000000000000000000000";
     -- Instruction = 0x20080000
     assert sinstr = "00100000000010000000000000000000";
-
   end process;
 
 end architecture;

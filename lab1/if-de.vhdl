@@ -8,7 +8,7 @@ entity if_de is
   port(reset, clk : in std_logic;
        InstrF, PCPlus4F : in std_logic_vector(31 downto 0);
        InstrD, PCPlus4D : out std_logic_vector(31 downto 0));
-  
+
 end entity;
 
 architecture behavior of if_de is

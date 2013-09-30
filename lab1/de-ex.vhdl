@@ -13,7 +13,7 @@ end entity;
 
 architecture behavior of de_ex is
 begin
-  
+
   Instr_FF   : flopr port map (reset => reset, clk => clk, d => InstrD, q => InstrE);
   PCPlus_FF  : flopr port map (reset => reset, clk => clk, d => PCPlus4D, q => PCPlus4E);
   RD1_FF     : flopr port map (reset => reset, clk => clk, d => RD1D, q => RD1E);
@@ -21,5 +21,5 @@ begin
   Signllm_FF : flopr port map (reset => reset, clk => clk, d => SignllmD, q => SignllmE);
   Rt_FF      : flopr port map (reset => reset, clk => clk, d => RtD, q => RtE);
   Rd_FF      : flopr port map (reset => reset, clk => clk, d => RdD, q => RdE);
-  
+
 end architecture;

@@ -73,7 +73,7 @@ begin
   begin
 
     sreset <= '1';
-    wait for 3 ns;
+    wait for 4 ns;
     -- PC = 0x00000000
     assert spc = "00000000000000000000000000000000";
     -- Instruction = 0x20080000
@@ -154,8 +154,9 @@ begin
     assert spc = "00000000000000000000000000111100";
     -- Instruction = 0xac0f001c
     assert sinstr = "10101100000011110000000000011100";
+    wait for 4 ns;
     sdump <= '1';
-    wait for 5 ns;
+    wait for 6 ns;
     sreset <= '1';
     wait for 3 ns;
     -- PC = 0x00000000

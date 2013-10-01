@@ -9,6 +9,8 @@ entity ex_me is
        ZeroE, reset, clk : in std_logic;
        WriteRegE : in std_logic_vector(4 downto 0);
        WriteRegM : out std_logic_vector(4 downto 0);
+       RegWriteE, MemToRegE, MemWriteE, JumpE, BranchE : in std_logic;
+       RegWriteM, MemToRegM, MemWriteM, JumpM, BranchM : out std_logic;
        AluOutE, WriteDataE, PCBranchE : in std_logic_vector(31 downto 0);
        AluOutM, WriteDataM, PCBranchM : out std_logic_vector(31 downto 0));
 
@@ -16,6 +18,17 @@ end entity;
 
 architecture behavior of ex_me is
 begin
+
+  RegWriteM   <= RegWriteE;
+  MemToRegM   <= MemToRegE;
+  MemWriteM   <= MemWriteE;
+  JumpM       <= JumpE;
+  BranchM     <= BranchE;
+  ZeroM       <= ZeroE;
+  AluOutM     <= AluOutE;
+  WriteDataM  <= WriteDataE;
+  WriteRegM   <= WriteRegE;
+  PCBranchM   <= PCBranchE;
 
 --  Zero_FF      : flip_flop port map (reset => reset, clk => clk, d => ZeroE, q => ZeroM);
 --  AluOut_FF    : flopr     port map (reset => reset, clk => clk, d => AluOutE, q => AluOutM);
@@ -29,16 +42,4 @@ begin
 --  Jump_FF       : flopr port map (reset => reset, clk => clk, d => JumpE, q => JumpM);
 --  Branch_FF     : flopr port map (reset => reset, clk => clk, d => BranchE, q => BranchM);
 
-  ZeroM       <= ZeroE;
-  AluOutM     <= AluOutE;
-  PCBranchM   <= PCBranchE;
-  WriteDataM  <= WriteDataE;
-  WriteRegM   <= WriteRegE;
-  RegWriteM   <= RegWriteE;
-  MemToRegM   <= MemToRegE;
-  MemWriteM   <= MemWriteE;
-  JumpM       <= JumpE;
-  BranchM     <= BranchE;
-  -- Esto no se si va aca, pero es correcto.
-  PCSrcM      <= BranchM and ZeroM;
 end architecture;

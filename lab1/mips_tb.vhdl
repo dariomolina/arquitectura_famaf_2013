@@ -41,6 +41,12 @@ begin
 
   process
   begin
+--        sreset <= '1';
+--        wait for 5 ns;
+--        sreset <= '0';
+--        wait for 100 ns;
+--        sdump <= '1';
+--        wait for 40 ns;
     sreset <= '1';
     wait for 3 ns;
     -- PC = 0x00000000

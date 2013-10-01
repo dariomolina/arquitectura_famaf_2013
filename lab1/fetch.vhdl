@@ -19,11 +19,10 @@ architecture behavior of fetch is
 begin
 
   PCF      <= PC1;
-  PcPlus4F <= PCPlus4;
   InstrF   <= Instr;
+  PcPlus4F <= PCPlus4;
   PCPlus4  <= TmpAdder(31 downto 0);
   PCJump   <= PCPlus4(31 downto 28) & Instr(25 downto 0) & "00";
-
 
   PCMux   : mux2  port map (s => PCSrcM, d0 => PCPlus4,
                             d1 => PCBranchM, y => PCNext);

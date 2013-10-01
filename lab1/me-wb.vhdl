@@ -18,16 +18,10 @@ end entity;
 architecture behavior of me_wb is
 begin
 
-  RegWriteW  <= RegWriteM;
-  MemToRegW  <= MemToRegM;
-  AluOutW    <= AluOutM;
-  ReadDataW  <= ReadDataM;
-  WriteRegW  <= WriteRegM;
-
---  AluOut_FF   : flopr port map (reset => reset, clk => clk, d => AluOutM, q => AluOutW);
---  ReadData_FF : flopr port map (reset => reset, clk => clk, d => ReadDataM, q => ReadDataW);
---  WriteReg_FF : flopr generic map (width => 4) port map (reset => reset, clk => clk, d => WriteRegM, q => WriteRegW);
--- RegWrite_FF  : flopr port map (reset => reset, clk => clk, d => RegWriteM, q => RegWriteW);
--- MemToReg_FF  : flopr port map (reset => reset, clk => clk, d => MemToRegM, q => MemToRegW);
+  AluOut_FF   : flopr port map (reset => reset, clk => clk, d => AluOutM, q => AluOutW);
+  ReadData_FF : flopr port map (reset => reset, clk => clk, d => ReadDataM, q => ReadDataW);
+  WriteReg_FF : flopr generic map (width => 5) port map (reset => reset, clk => clk, d => WriteRegM, q => WriteRegW);
+  RegWrite_FF  : flip_flop port map (reset => reset, clk => clk, d => RegWriteM, q => RegWriteW);
+  MemToReg_FF  : flip_flop port map (reset => reset, clk => clk, d => MemToRegM, q => MemToRegW);
 
 end architecture;

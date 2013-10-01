@@ -20,36 +20,21 @@ end entity;
 architecture behavior of de_ex is
 begin
 
-  PCPlus4E    <= PCPlus4D;
-  RD1E        <= RD1D;
-  RD2E        <= RD2D;
-  SignlmmE    <= SignlmmD;
-  RtE         <= RtD;
-  RdE         <= RdD;
-  RegWriteE   <= RegWriteD;
-  MemToRegE   <= MemToRegD;
-  MemWriteE   <= MemWriteD;
-  JumpE       <= JumpD;
-  BranchE     <= BranchD;
-  AluControlE <= AluControlD;
-  AluSrcE     <= AluSrcD;
-  RegDstE     <= RegDstD;
-
---  RD1_FF        : flopr port map (reset => reset, clk => clk, d => RD1D, q => RD1E);
---  RD2_FF        : flopr port map (reset => reset, clk => clk, d => RD2D, q => RD2E);
---  PCPlus_FF     : flopr port map (reset => reset, clk => clk, d => PCPlus4D, q => PCPlus4E);
---  Signllm_FF    : flopr port map (reset => reset, clk => clk, d => SignllmD, q => SignllmE);
---
---  Rt_FF         : flopr generic map (width => 4) port map (reset => reset, clk => clk, d => RtD, q => RtE);
---  Rd_FF         : flopr generic map (width => 4) port map (reset => reset, clk => clk, d => RdD, q => RdE);
---  AluControl_FF : flopr generic map (width => 2) port map (reset => reset, clk => clk, d => AluControlD, q => AluControlE);
---
---  Jump_FF       : flip_flop port map (reset => reset, clk => clk, d => JumpD, q => JumpE);
---  Branch_FF     : flip_flop port map (reset => reset, clk => clk, d => BranchD, q => BranchE);
---  AluSrc_FF     : flip_flop port map (reset => reset, clk => clk, d => AluSrcD, q => AluSrcE);
---  RegDst_FF     : flip_flop port map (reset => reset, clk => clk, d => RegDstD, q => RegDstE);
---  RegWrite_FF   : flip_flop port map (reset => reset, clk => clk, d => RegWriteD, q => RegWriteE);
---  MemToReg_FF   : flip_flop port map (reset => reset, clk => clk, d => MemToRegD, q => MemToRegE);
---  MemWrite_FF   : flip_flop port map (reset => reset, clk => clk, d => MemWriteD, q => MemWriteE);
+  RD1_FF        : flopr port map (reset => reset, clk => clk, d => RD1D, q => RD1E);
+  RD2_FF        : flopr port map (reset => reset, clk => clk, d => RD2D, q => RD2E);
+  PCPlus_FF     : flopr port map (reset => reset, clk => clk, d => PCPlus4D, q => PCPlus4E);
+  Signlmm_FF    : flopr port map (reset => reset, clk => clk, d => SignlmmD, q => SignlmmE);
+   
+  Rt_FF         : flopr generic map (width => 5) port map (reset => reset, clk => clk, d => RtD, q => RtE);
+  Rd_FF         : flopr generic map (width => 5) port map (reset => reset, clk => clk, d => RdD, q => RdE);
+  AluControl_FF : flopr generic map (width => 3) port map (reset => reset, clk => clk, d => AluControlD, q => AluControlE);
+   
+  Jump_FF       : flip_flop port map (reset => reset, clk => clk, d => JumpD, q => JumpE);
+  Branch_FF     : flip_flop port map (reset => reset, clk => clk, d => BranchD, q => BranchE);
+  AluSrc_FF     : flip_flop port map (reset => reset, clk => clk, d => AluSrcD, q => AluSrcE);
+  RegDst_FF     : flip_flop port map (reset => reset, clk => clk, d => RegDstD, q => RegDstE);
+  RegWrite_FF   : flip_flop port map (reset => reset, clk => clk, d => RegWriteD, q => RegWriteE);
+  MemToReg_FF   : flip_flop port map (reset => reset, clk => clk, d => MemToRegD, q => MemToRegE);
+  MemWrite_FF   : flip_flop port map (reset => reset, clk => clk, d => MemWriteD, q => MemWriteE);
 
 end architecture;

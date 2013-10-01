@@ -108,8 +108,8 @@ begin
     if (valid_address(a) = '1') then
       if clk'event and clk = '1' and we = '1' then
         mem(to_integer(unsigned(a(7 downto 2)))) <= wd;
-        report "Position: " & integer'image(to_integer(unsigned(a(7 downto 2))));
-        report "Write Data: " & to_hex_string(wd);
+        -- report "Position: " & integer'image(to_integer(unsigned(a(7 downto 2))));
+        -- report "Write Data: " & to_hex_string(wd);
         -- log_memory_dump;
       end if;
       rd <= mem(to_integer(unsigned(a(7 downto 2)))); -- word aligned

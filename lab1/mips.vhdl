@@ -22,6 +22,8 @@ architecture behaviour of mips is
 
 begin
 
+  instr <= InstrF;
+
   component_fetch      : fetch  port map (clk => clk, reset => reset, Jump => JumpM, PcSrcM => PcSrcM,
                                           PcBranchM => PcBranchM, InstrF => InstrF, PCF => pc, PcPlus4F => PcPlus4F);
 

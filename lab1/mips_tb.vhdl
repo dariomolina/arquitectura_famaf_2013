@@ -16,6 +16,36 @@ architecture test_bench of mips_tb is
     return lp.all;
   end;
 
+  function to_hex_string (s: std_logic_vector) return string is
+    constant s_norm: std_logic_vector(4 to s'length + 3) := s;
+    variable result : string (1 to s'length/4);
+    subtype slv4 is std_logic_vector(1 to 4);
+  begin
+    assert (s'length mod 4) = 0;
+    for i in result'range loop
+      case slv4'(s_norm(i * 4 to i * 4 + 3)) is
+        when "0000" => result(i) := '0';
+        when "0001" => result(i) := '1';
+        when "0010" => result(i) := '2';
+        when "0011" => result(i) := '3';
+        when "0100" => result(i) := '4';
+        when "0101" => result(i) := '5';
+        when "0110" => result(i) := '6';
+        when "0111" => result(i) := '7';
+        when "1000" => result(i) := '8';
+        when "1001" => result(i) := '9';
+        when "1010" => result(i) := 'a';
+        when "1011" => result(i) := 'b';
+        when "1100" => result(i) := 'c';
+        when "1101" => result(i) := 'd';
+        when "1110" => result(i) := 'e';
+        when "1111" => result(i) := 'f';
+        when others => result(i) := 'x';
+      end case;
+    end loop;
+    return result;
+  end;
+
   component mips
 
     port (reset, clk, dump : in std_logic;
@@ -41,12 +71,7 @@ begin
 
   process
   begin
---        sreset <= '1';
---        wait for 5 ns;
---        sreset <= '0';
---        wait for 100 ns;
---        sdump <= '1';
---        wait for 40 ns;
+
     sreset <= '1';
     wait for 3 ns;
     -- PC = 0x00000000

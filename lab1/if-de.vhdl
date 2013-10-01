@@ -14,7 +14,9 @@ end entity;
 architecture behavior of if_de is
 begin
 
-  Instr_FF  : flopr port map (reset => reset, clk => clk, d => InstrF, q => InstrD);
-  PCPlus_FF : flopr port map (reset => reset, clk => clk, d => PCPlus4F, q => PCPlus4D);
+--  Instr_FF  : flopr port map (reset => reset, clk => clk, d => InstrF, q => InstrD);
+--  PCPlus_FF : flopr port map (reset => reset, clk => clk, d => PCPlus4F, q => PCPlus4D);
 
+  InstrD <= InstrF;
+  PCPlus4D <= PCPlus4F;
 end architecture;

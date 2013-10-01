@@ -14,7 +14,10 @@ entity me_wb is
 end entity;
 
 architecture behavior of me_wb is
-  WriteReg_FF : flopr port map (reset => reset, clk => clk, d => WriteRegM, q => WriteRegW);
-  AluOut_FF  : flopr port map (reset => reset, clk => clk, d => AluOutM, q => AluOutW);
+begin
+
+  AluOut_FF   : flopr port map (reset => reset, clk => clk, d => AluOutM, q => AluOutW);
   ReadData_FF : flopr port map (reset => reset, clk => clk, d => ReadDataM, q => ReadDataW);
+  WriteReg_FF : flopr generic map (width => 4) port map (reset => reset, clk => clk, d => WriteRegM, q => WriteRegW);
+
 end architecture;

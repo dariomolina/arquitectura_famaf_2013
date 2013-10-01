@@ -47,6 +47,14 @@ package components is
 
   end component;
 
+  component if_de is
+
+    port(reset, clk : in std_logic;
+         InstrF, PCPlus4F : in std_logic_vector(31 downto 0);
+         InstrD, PCPlus4D : out std_logic_vector(31 downto 0));
+
+  end component;
+
   component decode is
 
     port (clk, RegWrite : in std_logic;
@@ -54,6 +62,14 @@ package components is
           RtD, RdD : out std_logic_vector(4 downto 0);
           InstrD, Wd3 : in std_logic_vector(31 downto 0);
           SignlmmD, RD1D, RD2D : out std_logic_vector(31 downto 0));
+
+  end component;
+
+  component de_ex is
+
+    port(reset, clk : in std_logic;
+         PCPlus4D, RD1D, RD2D, SignlmmD, RtD, RdD : in std_logic_vector(31 downto 0);
+         PCPlus4E, RD1E, RD2E, SignlmmE, RtE, RdE : out std_logic_vector(31 downto 0));
 
   end component;
 
@@ -69,12 +85,33 @@ package components is
 
   end component;
 
+  component ex_me is
+
+    port(ZeroM : out std_logic;
+         ZeroE, reset, clk : in std_logic;
+         WriteRegE : in std_logic_vector(4 downto 0);
+         WriteRegM : out std_logic_vector(4 downto 0);
+         AluOutE, WriteDataE, PCBranchE : in std_logic_vector(31 downto 0);
+         AluOutM, WriteDataM, PCBranchM : out std_logic_vector(31 downto 0));
+
+  end component;
+
   component memory is
 
     port (PcSrcM : out std_logic;
           ReadDataM : out std_logic_vector(31 downto 0);
           MemWrite, Branch, ZeroM, clk, dump : in std_logic;
           AluOutM, WriteDataM : in std_logic_vector(31 downto 0));
+
+  end component;
+
+  component me_wb is
+
+    port(reset, clk : in std_logic;
+         WriteRegM : in std_logic_vector(4 downto 0);
+         WriteRegW : out std_logic_vector(4 downto 0);
+         AluOutM, ReadDataM : in std_logic_vector(31 downto 0);
+         AluOutW, ReadDataW : out std_logic_vector(31 downto 0));
 
   end component;
 

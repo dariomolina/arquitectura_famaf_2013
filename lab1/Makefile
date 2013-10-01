@@ -7,8 +7,20 @@ mips_tb: mips mips_tb.vhdl
 	ghdl -a mips_tb.vhdl
 	ghdl -e mips_tb
 
-mips: components controller maindec aludec fetch decode execute memory write_back adder flopr alu imem dmem mux2 sl2 regfile signext datapath mips.vhdl
+mips: components controller maindec aludec fetch decode execute memory write_back adder flopr alu imem dmem mux2 sl2 regfile signext datapath if-de de-ex ex-me me-wb mips.vhdl
 	ghdl -a mips.vhdl
+
+if-de: if-de.vhdl
+	ghdl -a if-de.vhdl
+
+de-ex: de-ex.vhdl
+	ghdl -a if-de.vhdl
+
+ex-me: ex-me.vhdl
+	ghdl -a ex-me.vhdl
+
+me-wb: if-de.vhdl
+	ghdl -a me-wb.vhdl
 
 maindec: maindec.vhdl
 	ghdl -a maindec.vhdl

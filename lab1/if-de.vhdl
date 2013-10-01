@@ -16,4 +16,5 @@ begin
 
   Instr_FF  : flopr port map (reset => reset, clk => clk, d => InstrF, q => InstrD);
   PCPlus_FF : flopr port map (reset => reset, clk => clk, d => PCPlus4F, q => PCPlus4D);
+
 end architecture;

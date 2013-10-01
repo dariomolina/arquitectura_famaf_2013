@@ -5,21 +5,22 @@ use ieee.std_logic_1164.all;
 
 entity ex_me is
 
-  port(reset, clk : in std_logic;
-       ZeroE : in std_logic;
-       ZeroM : out std_logic;
+  port(ZeroM : out std_logic;
+       ZeroE, reset, clk : in std_logic;
        WriteRegE : in std_logic_vector(4 downto 0);
        WriteRegM : out std_logic_vector(4 downto 0);
-       AluOutE, WriteDataE : in std_logic_vector(31 downto 0);
-       AluOutM, WriteDataM : out std_logic_vector(31 downto 0));
+       AluOutE, WriteDataE, PCBranchE : in std_logic_vector(31 downto 0);
+       AluOutM, WriteDataM, PCBranchM : out std_logic_vector(31 downto 0));
 
 end entity;
 
 architecture behavior of ex_me is
+begin
 
-  Zero_FF  : flopr port map (reset => reset, clk => clk, d => ZeroE, q => ZeroM);
-  WriteReg_FF : flopr port map (reset => reset, clk => clk, d => WriteRegE, q => WriteRegM);
-  AluOut_FF  : flopr port map (reset => reset, clk => clk, d => AluOutE, q => AluOutM);
-  WriteData_FF : flopr port map (reset => reset, clk => clk, d => WriteDataE, q => WriteDataM);
+  Zero_FF      : flip_flop port map (reset => reset, clk => clk, d => ZeroE, q => ZeroM);
+  AluOut_FF    : flopr     port map (reset => reset, clk => clk, d => AluOutE, q => AluOutM);
+  PCBranch_FF  : flopr     port map (reset => reset, clk => clk, d => PCBranchE, q => PCBranchM);
+  WriteData_FF : flopr     port map (reset => reset, clk => clk, d => WriteDataE, q => WriteDataM);
+  WriteReg_FF  : flopr     generic map (width => 4) port map (reset => reset, clk => clk, d => WriteRegE, q => WriteRegM);
 
 end architecture;

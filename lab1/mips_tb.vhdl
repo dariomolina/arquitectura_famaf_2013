@@ -64,101 +64,101 @@ begin
   process
   begin
     sclk <= '1';
-    wait for 1 ns;
+    wait for 100 ps;
     sclk <= '0';
-    wait for 1 ns;
+    wait for 100 ps;
   end process;
 
   process
   begin
 
     sreset <= '1';
-    wait for 4 ns;
+    wait for 400 ps;
     -- PC = 0x00000000
     assert spc = "00000000000000000000000000000000";
     -- Instruction = 0x20080000
     assert sinstr = "00100000000010000000000000000000";
     sreset <= '0';
-    wait for 2 ns;
+    wait for 200 ps;
     -- PC = 0x00000004
     assert spc = "00000000000000000000000000000100";
     -- Instruction = 0x20090001
     assert sinstr = "00100000000010010000000000000001";
-    wait for 2 ns;
+    wait for 200 ps;
     -- PC = 0x00000008
     assert spc = "00000000000000000000000000001000";
     -- Instruction = 0x200a0002
     assert sinstr = "00100000000010100000000000000010";
-    wait for 2 ns;
+    wait for 200 ps;
     -- PC = 0x0000000C
     assert spc = "00000000000000000000000000001100";
     -- Instruction = 0x200b0003
     assert sinstr = "00100000000010110000000000000011";
-    wait for 2 ns;
+    wait for 200 ps;
     -- PC = 0x00000010
     assert spc = "00000000000000000000000000010000";
     -- Instruction = 0x200c0004
     assert sinstr = "00100000000011000000000000000100";
-    wait for 2 ns;
+    wait for 200 ps;
     -- PC = 0x00000014
     assert spc = "00000000000000000000000000010100";
     -- Instruction = 0x200d0005
     assert sinstr = "00100000000011010000000000000101";
-    wait for 2 ns;
+    wait for 200 ps;
     -- PC = 0x00000018
     assert spc = "00000000000000000000000000011000";
     -- Instruction = 0x200e0006
     assert sinstr = "00100000000011100000000000000110";
-    wait for 2 ns;
+    wait for 200 ps;
     -- PC = 0x0000001C
     assert spc = "00000000000000000000000000011100";
     -- Instruction = 0x200f0007
     assert sinstr = "00100000000011110000000000000111";
-    wait for 2 ns;
+    wait for 200 ps;
     -- PC = 0x00000020
     assert spc = "00000000000000000000000000100000";
     -- Instruction = 0xac080000
     assert sinstr = "10101100000010000000000000000000";
-    wait for 2 ns;
+    wait for 200 ps;
     -- PC = 0x00000024
     assert spc = "00000000000000000000000000100100";
     -- Instruction = 0xac090004
     assert sinstr = "10101100000010010000000000000100";
-    wait for 2 ns;
+    wait for 200 ps;
     -- PC = 0x00000028
     assert spc = "00000000000000000000000000101000";
     -- Instruction = 0xac0a0008
     assert sinstr = "10101100000010100000000000001000";
-    wait for 2 ns;
+    wait for 200 ps;
     -- PC = 0x0000002C
     assert spc = "00000000000000000000000000101100";
     -- Instruction = 0xac0b000c
     assert sinstr = "10101100000010110000000000001100";
-    wait for 2 ns;
+    wait for 200 ps;
     -- PC = 0x00000030
     assert spc = "00000000000000000000000000110000";
     -- Instruction = 0xac0c0010
     assert sinstr = "10101100000011000000000000010000";
-    wait for 2 ns;
+    wait for 200 ps;
     -- PC = 0x00000034
     assert spc = "00000000000000000000000000110100";
     -- Instruction = 0xac0d0014
     assert sinstr = "10101100000011010000000000010100";
-    wait for 2 ns;
+    wait for 200 ps;
     -- PC = 0x00000038
     assert spc = "00000000000000000000000000111000";
     -- Instruction = 0xac0e0018
     assert sinstr = "10101100000011100000000000011000";
-    wait for 2 ns;
+    wait for 200 ps;
     -- PC = 0x0000003C
     assert spc = "00000000000000000000000000111100";
     -- Instruction = 0xac0f001c
     assert sinstr = "10101100000011110000000000011100";
-    wait for 4 ns;
+    wait for 400 ps;
     sdump <= '1';
-    wait for 6 ns;
+    wait for 600 ps;
     sreset <= '1';
-    wait for 3 ns;
+    wait for 300 ps;
     -- PC = 0x00000000
     assert spc = "00000000000000000000000000000000";
     -- Instruction = 0x20080000

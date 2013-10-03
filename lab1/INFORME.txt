@@ -1,0 +1,110 @@
+ARQUITECTURA DE COMPUTADORAS 2013
+Laboratorio 1: Pipeline.
+
+Miembros:
+Nicolás Daniel Gómez
+Mariano Jesús Mateuci
+Alejandro José Naser Pastoriza
+
+Informe:
+El presente informe describe la implementación y decisiones de diseño
+tomadas respecto del microprocesador segmentado MIPS.
+
+Diseño:
+Principalmente la implementación del datapath correspondiente al
+microprocesador segmentado está divida en cinco componentes, cada
+una de las cuales implementa una etapa o fase.
+Ellas son, Fetch, Decode, Execute, Memory, WriteBack. Además contamos
+con los cuatro registros de segmentación IF/ID, ID/EX, EX/ME, ME/WB
+que separan el flujo de datos entre los 5 componentes principales
+preservando la información durante un ciclo de reloj de manera tal que
+el sistema evolucione en fases permitiendo la ejecución simulánea de
+instrucciones. Éste es una simple extensión del microprocesador MIPS
+single-cycle implementado en el práctico 2. Tan sólo se hicieron las
+siguientes 2 modificaciones:
+
+1) Se decidió cambiar la interfaz sugerida en el enunciado agregando
+como salidas de la etapa Instruction Decode todas aquellas señales y
+el bus de datos que salen de la estructura principal de control, de
+manera tal de que esta lógica naturalmente se encuentre limitada entre
+los registros de segmentación IF/ID e ID/EX. Así mismo con la
+compuerta AND que obtiene la señal PCSrcM (la cual se añade al
+segmento Memory) de manera tal que la entidad de mayor nivel MIPS tan
+sólo deba port mapear 9 entidades y toda la lógica quede oculta en
+entidades de menor nivel.
+
+2) El segundo cambio consistió en partir el datapath single cycle en 5
+componentes correspondiente a las 5 fases de la segmentación, de esta
+manera la comprensión del sistema resulta mucho más natural, pues en
+ella se puede observar las operaciones realizadas por cada etapa y el
+flujo de datos de izquierda a derecha, salvo en el caso de PCSrcM y el
+bus salida de la etapa WriteBack que conecta la misma con la etapa
+Decode en la cual se envía datos (señal ResultW) para ser escrito en
+el banco de registros.
+
+Testing:
+El test bench consiste en lo siguiente:
+La señal de reset se establece en '1' de manera tal que se produzca un
+reseto de todo el sistema. Se esperan dos ciclos de reloj de manera
+tal que el sistema este listo para comenzar la ejecución. Luego de
+ello reset se establece en '0' y se empieza a analizar fuertemente la
+etapa Instruction Fetch. El objetivo es el siguiente: observar que por
+cada ciclo de reloj el Program Counter toma el valor correcto y la
+instrucción que se obtiene de la Memoria de Instrucciones es la
+correcta.
+El sistema evoluciona de esta manera durante 16 ciclos de reloj (pues
+16 son las instrucciones en el archivo de ejemplo, del cual se carga
+un código escrito en assembler MIPS) y en este momento ya todas las
+instrucciones se deberían haber ejecutado y las últimas aún deberían
+encontrarse en el pipeline. Luego se establece la señal dump a '1' con
+el objetivo de hacer un vuelco del estado de la memoria RAM de este
+microprocesador en un archivo para poder ser procesada. Este programa
+de ejemplo lo que hace es cargar 8 registros del banco de registros
+con los valores del 0 al 7 (con instrucciones addi) y luego mover
+estos valores a la memoria de datos, cargando en la posición i-ésima
+el valor i, con i variando entre 0 y 7. Luego se establece la señal de
+reset a '1' y se espera un ciclo y medio de reloj y se verifica que el
+PC haya sido establecido en 0 nuevamente, y la instrucción que se trae
+a continuación es nuevamente la primera, para ver que el estado del
+pipeline se reestablece apropiadamente. En última instancia este test
+es completamente inútil pues se podría implementar un hardware que
+resuelva este problema sin ser el MIPS pero sabemos en que consiste
+nuestro código VHDL por lo cual es un buen indicio de que funciona
+correctamente. La prueba más importante es analizar el dump de la
+memoria de datos, en el cual los valores han sido escritos satisfactoriamente.
+
+Problemas enfrentados:
+Enfrentamos dos problemas, el primero fue cómo debuggear código VHDL,
+para ello introdujimos funciones de log en el sistema. Por un lado en
+los tests para poder imprimir por consola el valor de un
+std_logic_vector con lo cual, si fallaba un test, podíamos observar
+que valor se encontraba en ese momento en el vector. Por otro lado,
+queríamos saber si nuestro microprocesador montaba correctamente las
+instrucciones en la Instruction Memory, y para no tomarnos la molestia
+de tener que traducir un código binario alojado en una palabra de la
+memoria de instrucciones desarrollamos una función que toma un
+std_logic_vector y devuelve un string con su representación en base
+16.
+El segundo problema enfrentado fue que en el módulo imem obteníamos un
+integer overflow aparentemente observado en el compilador ghdl y no en
+otras herramientas. En ella para convertir un valor hexadecimal a un
+entero se utilizaba un acumulador (variable de tipo integer) de 32
+bits con signo, con lo cual se podían representar enteros hasta 2^31 -
+1 que es un número menor a muchos valores escritos en 32 bits, por lo
+cual se modifico el código para que este acumulador sea un vector
+unsigned de 32 bits.
+
+Conclusión:
+El laboratorio resultó muy interesante pues al implementar el marco
+teórico descripto en el libro de Patterson logramos un profundo
+entendimiento del microprocesador MIPS, de su flujo de datos, y de la
+manera en la que con sólo 1 recurso de cada tipo, se puede lograr la
+ejecución simultánea de instrucciones. Por otro lado fue muy
+interesante observar la evolución del sistema en GTKWave en el cual se
+podían observar los cambios que iban sufriendo los componentes con
+estado internos a cada fase del pipeline. Dos cosas podríamos haber
+analizado pero no fue posible: con las herramientas utilizadas no es
+posible apreciar verdaderamente la mejora provista por la segmentación
+pues estas tienen sus limitaciones para bajar la frecuencia del pulso
+de reloj de manera tal que esta mejora en performance fuera visible y
+por otro lado se podría añadir control de Hazards a este sistema.

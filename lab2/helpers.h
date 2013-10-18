@@ -3,11 +3,27 @@
 
 #define LENGTH 20
 
+#define ANSI_COLOR_RED     "\x1b[31m"
+#define ANSI_COLOR_GREEN   "\x1b[32m"
+#define ANSI_COLOR_YELLOW  "\x1b[33m"
+#define ANSI_COLOR_BLUE    "\x1b[34m"
+#define ANSI_COLOR_MAGENTA "\x1b[35m"
+#define ANSI_COLOR_CYAN    "\x1b[36m"
+#define ANSI_COLOR_RESET   "\x1b[0m"
+
+/* Returns the number of platforms on the system */
 cl_uint get_platforms_number (void);
 
-cl_platform_id create_platform (cl_uint num_platforms);
+/* Returns the id of the first platform proposed by
+   the system */
+cl_platform_id get_platform (void);
 
+/* Returns the number of devices compatible with
+   OpenCL */
 cl_uint get_devices_num (cl_platform_id platform_id);
+
+/* Returns an array consisting of all devices ids */
+cl_device_id* get_devices_ids (cl_platform_id platform_id, cl_uint num_devices);
 
 cl_device_id create_device (cl_platform_id platform_id);
 
@@ -42,3 +58,7 @@ void enqueue_kernel_execution (cl_command_queue command_queue, cl_kernel kernel,
 void enqueue_read_buffer_task (cl_command_queue command_queue, cl_mem buffer, int length, int *array, const char* name);
 
 void print_platform_information (cl_platform_id platform_id);
+
+void get_device_info (cl_device_id device_id, cl_device_info info, const char * attr, int type);
+
+cl_ulong device_information (cl_device_id device_id, int device_number);

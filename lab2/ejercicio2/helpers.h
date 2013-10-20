@@ -2,7 +2,7 @@
 #include <CL/cl.h>
 
 #define LENGTH 20
-#define N 2
+#define N 10
 
 cl_uint get_platforms_number (void);
 

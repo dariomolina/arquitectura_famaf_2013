@@ -106,7 +106,7 @@ cl_kernel create_kernel (cl_program program) {
   cl_int err;
   cl_kernel kernel;
 
-  kernel = clCreateKernel (program, "matrix_mult", &err);
+  kernel = clCreateKernel (program, "vecadd", &err);
 
   if (err == CL_SUCCESS) {
     printf ("Kernel Creado Exitosamente\n\n");
@@ -206,7 +206,7 @@ void enqueue_kernel_execution (cl_command_queue command_queue, cl_kernel kernel,
   size_t local = length;
   size_t global = length;
 
-  err = clEnqueueNDRangeKernel (command_queue, kernel, 2, NULL, &global, &local, 0, NULL, NULL);
+  err = clEnqueueNDRangeKernel (command_queue, kernel, 1, NULL, &global, &local, 0, NULL, NULL);
 
   if (err == CL_SUCCESS) {
     printf ("Kernel Enviado Al Dispositivo Exitosamente\n\n");

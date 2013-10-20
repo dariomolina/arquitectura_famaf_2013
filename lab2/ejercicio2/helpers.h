@@ -2,13 +2,21 @@
 #include <CL/cl.h>
 
 #define LENGTH 20
-#define N 10
+#define N 3
 
-cl_uint get_platforms_number (void);
+#define ANSI_COLOR_RED     "\x1b[31m"
+#define ANSI_COLOR_GREEN   "\x1b[32m"
+#define ANSI_COLOR_YELLOW  "\x1b[33m"
+#define ANSI_COLOR_BLUE    "\x1b[34m"
+#define ANSI_COLOR_MAGENTA "\x1b[35m"
+#define ANSI_COLOR_CYAN    "\x1b[36m"
+#define ANSI_COLOR_RESET   "\x1b[0m"
+
+void platforms_number (void);
 
 cl_platform_id get_platform (void);
 
-cl_uint get_devices_num (cl_platform_id platform_id);
+cl_uint devices_number (cl_platform_id platform_id);
 
 cl_device_id create_device (cl_platform_id platform_id);
 

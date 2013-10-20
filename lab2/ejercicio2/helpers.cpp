@@ -1,48 +1,55 @@
 #include "helpers.h"
 
-cl_uint get_platforms_number (void) {
+void platforms_number (void) {
   cl_uint err;
   cl_uint num_platforms;
 
+  /* after the call the pointer given as third parameter will
+     contain the number of platforms on the system */
   err = clGetPlatformIDs (0, NULL, &num_platforms);
 
   if (err == CL_SUCCESS) {
-    printf ("Plataformas Disponibles: %u\n\n", num_platforms);
+    printf (ANSI_COLOR_YELLOW "Plataformas disponibles" ANSI_COLOR_RESET " %u\n", num_platforms);
   } else {
-    printf ("Error Al Obtener Número De Plataformas!\n\n");
+    printf (ANSI_COLOR_RED "Error al obtener número de plataformas\n" ANSI_COLOR_RESET);
   }
-
-  return num_platforms;
 }
 
 cl_platform_id get_platform (void) {
   cl_uint err;
   cl_platform_id platform_id;
 
+  /* after the call the pointer given as second parameter will
+     be the list of all ids of platforms on the system, the number
+     will be restricted by the number given as first parameter, in
+     this case platform_id will contain the id of the first platform
+     proposed by the system */
   err = clGetPlatformIDs (1, &platform_id, NULL);
 
   if (err == CL_SUCCESS) {
-    printf ("Plataforma Creada Exitosamente: id -> %u\n\n", platform_id);
+    printf (ANSI_COLOR_GREEN "Plataforma creada exitosamente\n\n" ANSI_COLOR_RESET);
   } else {
-    printf ("Error Al Crear Plataforma\n\n");
+    printf (ANSI_COLOR_RED "Error al crear plataforma\n" ANSI_COLOR_RESET);
   }
 
   return platform_id;
 }
 
-cl_uint get_devices_num (cl_platform_id platform_id) {
+cl_uint devices_number (cl_platform_id platform_id) {
   cl_uint err;
-  cl_uint num_devices;
+  cl_uint devices_number;
 
-  err = clGetDeviceIDs (platform_id, CL_DEVICE_TYPE_ALL, 0, NULL, &num_devices);
+  /* after the call the pointer given as fifth parameter will
+     contain the number of devices on the platform specified by platform_id */
+  err = clGetDeviceIDs (platform_id, CL_DEVICE_TYPE_ALL, 0, NULL, &devices_number);
 
   if (err == CL_SUCCESS) {
-    printf ("Dispositivos Disponibles: %u \n\n", num_devices);
+    printf (ANSI_COLOR_YELLOW "Dispositivos disponibles" ANSI_COLOR_RESET " %u \n", devices_number);
   } else {
-    printf ("Error Al Obtener Número De Dispositivos\n\n");
+    printf (ANSI_COLOR_RED "Error al obtener número de dispositivos\n" ANSI_COLOR_RESET);
   }
 
-  return num_devices;
+  return devices_number;
 }
 
 cl_device_id create_device (cl_platform_id platform_id) {
@@ -52,9 +59,9 @@ cl_device_id create_device (cl_platform_id platform_id) {
   err = clGetDeviceIDs (platform_id, CL_DEVICE_TYPE_ALL, 1, &device_id, NULL);
 
   if (err == CL_SUCCESS) {
-    printf ("Dispositivo Creado Exitosamente: Id -> %u\n\n", device_id);
+    printf (ANSI_COLOR_YELLOW "Dispositivo Creado Exitosamente: Id ->" ANSI_COLOR_RESET " %u\n\n", device_id);
   } else {
-    printf ("Error Al Crear Dispositivo!\n\n");
+    printf (ANSI_COLOR_RED "Error Al Crear Dispositivo!\n\n" ANSI_COLOR_RESET);
   }
 
   return device_id;
@@ -67,9 +74,9 @@ cl_context create_context (cl_device_id device_id) {
   context = clCreateContext (NULL, 1, &device_id, NULL, NULL, &err);
 
   if (err == CL_SUCCESS) {
-    printf ("Contexto Creado Exitosamente\n\n");
+    printf (ANSI_COLOR_GREEN "Contexto Creado Exitosamente\n\n" ANSI_COLOR_RESET);
   } else {
-    printf ("Error Al Crear Contexto\n\n");
+    printf (ANSI_COLOR_RED "Error Al Crear Contexto\n\n" ANSI_COLOR_RESET);
   }
 
   return context;
@@ -82,9 +89,9 @@ cl_program create_program (cl_context context, const char* program_source) {
   program = clCreateProgramWithSource (context, 1, (const char **) &program_source, NULL, &err);
 
   if (err == CL_SUCCESS) {
-    printf ("Programa Creado Exitosamente\n\n");
+    printf (ANSI_COLOR_GREEN "Programa Creado Exitosamente\n\n" ANSI_COLOR_RESET);
   } else {
-    printf ("Error Al Crear Programa\n\n");
+    printf (ANSI_COLOR_RED "Error Al Crear Programa\n\n" ANSI_COLOR_RESET);
   }
 
   return program;
@@ -96,9 +103,9 @@ void build_program (cl_program program, cl_device_id device_id) {
   err = clBuildProgram (program, 1, &device_id, NULL, NULL, NULL);
 
   if (err == CL_SUCCESS){
-    printf ("Programa Compilado Exitosamente\n\n");
+    printf (ANSI_COLOR_GREEN "Programa Compilado Exitosamente\n\n" ANSI_COLOR_RESET);
   } else {
-    printf ("Error Al Compilar Programa\n\n");
+    printf (ANSI_COLOR_RED "Error Al Compilar Programa\n\n" ANSI_COLOR_RESET);
   }
 }
 
@@ -106,12 +113,12 @@ cl_kernel create_kernel (cl_program program) {
   cl_int err;
   cl_kernel kernel;
 
-  kernel = clCreateKernel (program, "vecadd", &err);
+  kernel = clCreateKernel (program, "matrix_multip", &err);
 
   if (err == CL_SUCCESS) {
-    printf ("Kernel Creado Exitosamente\n\n");
+    printf (ANSI_COLOR_GREEN "Kernel Creado Exitosamente\n\n" ANSI_COLOR_RESET);
   } else {
-    printf ("Error Al Crear Kernel\n\n");
+    printf (ANSI_COLOR_RED "Error Al Crear Kernel\n\n" ANSI_COLOR_RESET);
   }
 
   return kernel;
@@ -122,9 +129,12 @@ void print_memory_object (int *array, int length, const char *name) {
 
   printf ("%s = [", name);
   for (i = 0; i < length - 1; i++) {
-    printf ("%d, ", array[i]);
+    if (i != 0 && i % N == 0) {
+      printf("\n            ");
+    }
+    printf ("%d ", array[i]);
   }
-  printf ("%d]\n", array[length - 1]);
+  printf ("%d]\n\n", array[length - 1]);
 }
 
 int* create_memory_object (int length, const char *name) {
@@ -134,14 +144,15 @@ int* create_memory_object (int length, const char *name) {
   array = (int *) calloc (length, sizeof (int));
 
   if (array != NULL) {
-    printf ("Arreglo De Datos Creado Exitosamente\n\n");
+    printf (ANSI_COLOR_GREEN "Arreglo De Datos Creado Exitosamente\n\n" ANSI_COLOR_RESET);
   } else {
-    printf ("Error Al Crear Arreglo De Datos\n\n");
+    printf (ANSI_COLOR_RED "Error Al Crear Arreglo De Datos\n\n" ANSI_COLOR_RESET);
   }
 
   for (i = 0; i < length; i++) {
     array[i] = (int) ((10.0 * rand()) / RAND_MAX);
   }
+
   print_memory_object (array, length, name);
 
   return array;
@@ -154,9 +165,9 @@ cl_mem create_buffer (int length, cl_context context, const char* name) {
   array = clCreateBuffer (context, CL_MEM_READ_ONLY, sizeof (int) * length, NULL, &err);
 
   if (err == CL_SUCCESS){
-    printf ("Buffer %s Creado Exitosamente\n\n", name);
+    printf (ANSI_COLOR_YELLOW "Buffer" ANSI_COLOR_RESET " %s " ANSI_COLOR_YELLOW "Creado Exitosamente\n\n" ANSI_COLOR_RESET, name);
   } else {
-    printf ("Error Al Crear Buffer\n\n");
+    printf (ANSI_COLOR_RED "Error Al Crear Buffer\n\n" ANSI_COLOR_RESET);
   }
 
   return array;
@@ -168,9 +179,9 @@ void set_kernel_argument (cl_kernel kernel, cl_mem arg, int arg_num, const char 
   err = clSetKernelArg (kernel, arg_num, sizeof (cl_mem), &arg);
 
   if (err == CL_SUCCESS) {
-    printf ("Argumento De Kernel %s Configurado Exitosamente\n\n", arg_name);
+    printf (ANSI_COLOR_YELLOW "Argumento De Kernel" ANSI_COLOR_RESET " %s " ANSI_COLOR_YELLOW "Configurado Exitosamente\n\n" ANSI_COLOR_RESET, arg_name);
   } else {
-    printf ("Error Al Configurar Argumento De Kernel\n\n");
+    printf (ANSI_COLOR_RED "Error Al Configurar Argumento De Kernel\n\n" ANSI_COLOR_RESET);
   }
 }
 
@@ -181,9 +192,9 @@ cl_command_queue create_command_queue (cl_context context, cl_device_id device_i
   command_queue = clCreateCommandQueue (context, device_id, 0, &err);
 
   if (err == CL_SUCCESS) {
-    printf ("Cola De Comandos Creada Exitosamente\n\n");
+    printf (ANSI_COLOR_GREEN "Cola De Comandos Creada Exitosamente\n\n" ANSI_COLOR_RESET);
   } else {
-    printf ("Error Al Crear Cola De Comandos\n\n");
+    printf (ANSI_COLOR_RED "Error Al Crear Cola De Comandos\n\n" ANSI_COLOR_RESET);
   }
 
   return command_queue;
@@ -195,9 +206,9 @@ void enqueue_write_buffer_task (cl_command_queue command_queue, cl_mem buffer, i
   err = clEnqueueWriteBuffer (command_queue, buffer, CL_TRUE, 0, sizeof (int) * length, array, 0, NULL, NULL);
 
   if (err == CL_SUCCESS) {
-    printf ("Buffer %s Copiado Exitosamente Al Dispositivo\n\n", name);
+    printf (ANSI_COLOR_YELLOW "Buffer" ANSI_COLOR_RESET " %s " ANSI_COLOR_YELLOW "Copiado Exitosamente Al Dispositivo\n\n" ANSI_COLOR_RESET, name);
   } else {
-    printf ("Error Al Copiar Buffer Al Dispositivo\n\n");
+    printf (ANSI_COLOR_RED "Error Al Copiar Buffer Al Dispositivo\n\n" ANSI_COLOR_RESET);
   }
 }
 
@@ -209,21 +220,20 @@ void enqueue_kernel_execution (cl_command_queue command_queue, cl_kernel kernel,
   err = clEnqueueNDRangeKernel (command_queue, kernel, 1, NULL, &global, &local, 0, NULL, NULL);
 
   if (err == CL_SUCCESS) {
-    printf ("Kernel Enviado Al Dispositivo Exitosamente\n\n");
+    printf (ANSI_COLOR_GREEN "Kernel Enviado Al Dispositivo Exitosamente\n\n" ANSI_COLOR_RESET);
   } else {
-    printf ("Error Al Enviar Kernel Al Dispositivo\n\n");
+    printf (ANSI_COLOR_RED "Error Al Enviar Kernel Al Dispositivo\n\n" ANSI_COLOR_RESET);
   }
 }
 
 void enqueue_read_buffer_task (cl_command_queue command_queue, cl_mem buffer, int length, int *array, const char* name) {
   cl_int err;
-
   err = clEnqueueReadBuffer (command_queue, buffer, CL_TRUE, 0, sizeof (int) * length, array, 0, NULL, NULL);
 
   if (err == CL_SUCCESS) {
-    printf ("Buffer %s Copiado Exitosamente Desde El Dispositivo\n\n", name);
+    printf (ANSI_COLOR_YELLOW "Buffer" ANSI_COLOR_RESET " %s " ANSI_COLOR_YELLOW " Copiado Exitosamente Desde El Dispositivo\n\n" ANSI_COLOR_RESET, name);
   } else {
-    printf ("Error Al Copiar Buffer Desde El Dispositivo\n\n");
+    printf (ANSI_COLOR_RED "Error Al Copiar Buffer Desde El Dispositivo\n\n" ANSI_COLOR_RESET);
   }
 }
 
@@ -232,14 +242,14 @@ char * readKernel(void) {
   FILE *fp = fopen("kernel.cl", "r");
 
   if (fp == NULL) {
-    printf("Cannot Open Kernel.cl\n");
+    printf(ANSI_COLOR_RED "Cannot Open Kernel.cl\n" ANSI_COLOR_RESET);
   } else {
-    printf("Kernel.cl Opened\n");
+    printf(ANSI_COLOR_GREEN "Kernel.cl Opened\n" ANSI_COLOR_RESET);
   }
 
   fseek(fp, 0, SEEK_END);
   source_length[0] = ftell(fp);
-   
+
   if (source_length[0] == 0) {
     printf("Kernel.cl is empty\n");
   } else {
@@ -248,12 +258,12 @@ char * readKernel(void) {
 
   char *source = (char*) calloc(source_length[0] + 1, 1);
   if (source == 0) {
-    printf("Memory allocation failed");
+    printf(ANSI_COLOR_RED "Memory allocation failed" ANSI_COLOR_RESET);
   }
 
   fseek(fp, 0, SEEK_SET);
   fread(source, 1, source_length[0], fp);
-  printf("Kernel.cl Read\n");
-   
+  printf(ANSI_COLOR_GREEN "Kernel.cl Read\n" ANSI_COLOR_RESET);
+
   return source;
 }

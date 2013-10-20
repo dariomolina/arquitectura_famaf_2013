@@ -10,14 +10,14 @@ int main (void) {
   cl_kernel kernel;
 
   int * a_mem;
-  int * b_mem; 
+  int * b_mem;
   int * c_mem;
 
   const char * a;
   const char * b;
   const char * c;
 
-  cl_mem a_in, b_in, c_out;
+  cl_mem a_in, b_in, dim_in, c_out;
   cl_command_queue command_queue;
 
   a = (char *) calloc(10, sizeof(char));
@@ -31,9 +31,9 @@ int main (void) {
 
   program_source = (char *) calloc(1000, sizeof(char));
 
-  get_platforms_number ();
+  platforms_number ();
   platform_id = get_platform ();
-  devices_num = get_devices_num (platform_id);
+  devices_num = devices_number (platform_id);
   device_id = create_device(platform_id);
   context = create_context(device_id);
   program_source = readKernel ();

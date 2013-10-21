@@ -124,50 +124,19 @@ cl_kernel create_kernel (cl_program program) {
   return kernel;
 }
 
-void print_memory_object (int *array, int length, const char *name) {
-  int i = 0;
-
-  printf ("%s = [", name);
-  for (i = 0; i < length - 1; i++) {
-    printf ("%d, ", array[i]);
-  }
-  printf ("%d]\n\n", array[length - 1]);
-}
-
-int* create_memory_object (int length, const char *name) {
-  int i;
-  int *array;
-
-  array = (int *) calloc (length, sizeof (int));
-
-  if (array != NULL) {
-    printf (ANSI_COLOR_GREEN "\nArreglo de datos creado exitosamente\n" ANSI_COLOR_RESET);
-  } else {
-    printf (ANSI_COLOR_RED "Error al crear arreglo de datos\n" ANSI_COLOR_RESET);
-  }
-
-  for (i = 0; i < length; i++) {
-    array[i] = (int) ((10.0 * rand()) / RAND_MAX);
-  }
-
-  print_memory_object (array, length, name);
-
-  return array;
-}
-
-cl_mem create_buffer (int length, cl_context context, const char* name) {
+cl_mem create_buffer (cl_context context, const char* name, int size) {
   cl_int err;
-  cl_mem array;
+  cl_mem sum_buffer;
 
-  array = clCreateBuffer (context, CL_MEM_READ_WRITE, sizeof (int) * length, NULL, &err);
+  sum_buffer = clCreateBuffer (context, CL_MEM_READ_WRITE, size * sizeof (float), NULL, &err);
 
   if (err == CL_SUCCESS){
-    printf (ANSI_COLOR_YELLOW "Buffer" ANSI_COLOR_RESET " %s " ANSI_COLOR_YELLOW "creado exitosamente\n\n" ANSI_COLOR_RESET, name);
+    printf (ANSI_COLOR_YELLOW "\nBuffer" ANSI_COLOR_RESET " %s " ANSI_COLOR_YELLOW "creado exitosamente\n\n" ANSI_COLOR_RESET, name);
   } else {
     printf (ANSI_COLOR_RED "Error al crear buffer\n" ANSI_COLOR_RESET);
   }
 
-  return array;
+  return sum_buffer;
 }
 
 void set_kernel_argument (cl_kernel kernel, cl_mem arg, int arg_num, const char * arg_name) {
@@ -197,38 +166,23 @@ cl_command_queue create_command_queue (cl_context context, cl_device_id device_i
   return command_queue;
 }
 
-void enqueue_write_buffer_task (cl_command_queue command_queue, cl_mem buffer, int length, int *array, const char* name) {
+void enqueue_kernel_execution (cl_command_queue command_queue, cl_kernel kernel, int num_steps) {
   cl_int err;
+  size_t local = num_steps;
+  size_t global = num_steps;
 
-  err = clEnqueueWriteBuffer (command_queue, buffer, CL_TRUE, 0, sizeof (int) * length, array, 0, NULL, NULL);
-
-  if (err == CL_SUCCESS) {
-    printf (ANSI_COLOR_YELLOW "Buffer" ANSI_COLOR_RESET " %s " ANSI_COLOR_YELLOW "copiado exitosamente al dispositivo\n\n" ANSI_COLOR_RESET, name);
-  } else {
-    printf (ANSI_COLOR_RED "Error al copiar buffer al dispositivo\n" ANSI_COLOR_RESET);
-  }
-}
-
-cl_event enqueue_kernel_execution (cl_command_queue command_queue, cl_kernel kernel, int length, cl_uint num_events_in_wait_list, const cl_event *event_wait_list) {
-  cl_int err;
-  size_t local = length;
-  size_t global = length;
-  cl_event event;
-
-  err = clEnqueueNDRangeKernel (command_queue, kernel, 1, NULL, &global, &local, num_events_in_wait_list, event_wait_list, &event);
+  err = clEnqueueNDRangeKernel (command_queue, kernel, 1, NULL, &global, &local, 0, NULL, NULL);
 
   if (err == CL_SUCCESS) {
     printf (ANSI_COLOR_GREEN "Kernel enviado al dispositivo exitosamente\n\n" ANSI_COLOR_RESET);
   } else {
     printf (ANSI_COLOR_RED "Error al enviar kernel al dispositivo\n" ANSI_COLOR_RESET);
   }
-
-  return event;
 }
 
-void enqueue_read_buffer_task (cl_command_queue command_queue, cl_mem buffer, int length, int *array, const char* name) {
+void enqueue_read_buffer_task (cl_command_queue command_queue, cl_mem buffer, int num_steps, float *sum, const char* name) {
   cl_int err;
-  err = clEnqueueReadBuffer (command_queue, buffer, CL_TRUE, 0, sizeof (int) * length, array, 0, NULL, NULL);
+  err = clEnqueueReadBuffer (command_queue, buffer, CL_TRUE, 0, num_steps * sizeof (float), sum, 0, NULL, NULL);
 
   if (err == CL_SUCCESS) {
     printf (ANSI_COLOR_YELLOW "Buffer" ANSI_COLOR_RESET " %s " ANSI_COLOR_YELLOW "copiado exitosamente desde el dispositivo\n" ANSI_COLOR_RESET, name);

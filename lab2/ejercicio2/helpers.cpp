@@ -127,14 +127,14 @@ cl_kernel create_kernel (cl_program program) {
 void print_memory_object (int *array, int length, const char *name) {
   int i;
 
-  printf ("%s = [", name);
+  printf ("%s = | ", name);
   for (i = 0; i < length - 1; i++) {
     if (i != 0 && i % N == 0) {
-      printf("\n            ");
+      printf("| \n           | ");
     }
     printf ("%d ", array[i]);
   }
-  printf ("%d]\n\n", array[length - 1]);
+  printf ("%d |\n\n", array[length - 1]);
 }
 
 int* create_memory_object (int length, const char *name) {
@@ -144,9 +144,9 @@ int* create_memory_object (int length, const char *name) {
   array = (int *) calloc (length, sizeof (int));
 
   if (array != NULL) {
-    printf (ANSI_COLOR_GREEN "Arreglo De Datos Creado Exitosamente\n\n" ANSI_COLOR_RESET);
+    printf (ANSI_COLOR_GREEN "Arreglo De Datos Creado Exitosamente\n" ANSI_COLOR_RESET);
   } else {
-    printf (ANSI_COLOR_RED "Error Al Crear Arreglo De Datos\n\n" ANSI_COLOR_RESET);
+    printf (ANSI_COLOR_RED "Error Al Crear Arreglo De Datos\n" ANSI_COLOR_RESET);
   }
 
   for (i = 0; i < length; i++) {
@@ -165,9 +165,9 @@ cl_mem create_buffer (int length, cl_context context, const char* name) {
   array = clCreateBuffer (context, CL_MEM_READ_ONLY, sizeof (int) * length, NULL, &err);
 
   if (err == CL_SUCCESS){
-    printf (ANSI_COLOR_YELLOW "Buffer" ANSI_COLOR_RESET " %s " ANSI_COLOR_YELLOW "Creado Exitosamente\n\n" ANSI_COLOR_RESET, name);
+    printf (ANSI_COLOR_YELLOW "Buffer" ANSI_COLOR_RESET " %s " ANSI_COLOR_YELLOW "Creado Exitosamente\n" ANSI_COLOR_RESET, name);
   } else {
-    printf (ANSI_COLOR_RED "Error Al Crear Buffer\n\n" ANSI_COLOR_RESET);
+    printf (ANSI_COLOR_RED "Error Al Crear Buffer\n" ANSI_COLOR_RESET);
   }
 
   return array;
@@ -179,9 +179,9 @@ void set_kernel_argument (cl_kernel kernel, cl_mem arg, int arg_num, const char 
   err = clSetKernelArg (kernel, arg_num, sizeof (cl_mem), &arg);
 
   if (err == CL_SUCCESS) {
-    printf (ANSI_COLOR_YELLOW "Argumento De Kernel" ANSI_COLOR_RESET " %s " ANSI_COLOR_YELLOW "Configurado Exitosamente\n\n" ANSI_COLOR_RESET, arg_name);
+    printf (ANSI_COLOR_YELLOW "Argumento De Kernel" ANSI_COLOR_RESET " %s " ANSI_COLOR_YELLOW "Configurado Exitosamente\n" ANSI_COLOR_RESET, arg_name);
   } else {
-    printf (ANSI_COLOR_RED "Error Al Configurar Argumento De Kernel\n\n" ANSI_COLOR_RESET);
+    printf (ANSI_COLOR_RED "Error Al Configurar Argumento De Kernel\n" ANSI_COLOR_RESET);
   }
 }
 
@@ -206,9 +206,9 @@ void enqueue_write_buffer_task (cl_command_queue command_queue, cl_mem buffer, i
   err = clEnqueueWriteBuffer (command_queue, buffer, CL_TRUE, 0, sizeof (int) * length, array, 0, NULL, NULL);
 
   if (err == CL_SUCCESS) {
-    printf (ANSI_COLOR_YELLOW "Buffer" ANSI_COLOR_RESET " %s " ANSI_COLOR_YELLOW "Copiado Exitosamente Al Dispositivo\n\n" ANSI_COLOR_RESET, name);
+    printf (ANSI_COLOR_YELLOW "Buffer" ANSI_COLOR_RESET " %s " ANSI_COLOR_YELLOW "Copiado Exitosamente Al Dispositivo\n" ANSI_COLOR_RESET, name);
   } else {
-    printf (ANSI_COLOR_RED "Error Al Copiar Buffer Al Dispositivo\n\n" ANSI_COLOR_RESET);
+    printf (ANSI_COLOR_RED "Error Al Copiar Buffer Al Dispositivo\n" ANSI_COLOR_RESET);
   }
 }
 
@@ -231,9 +231,9 @@ void enqueue_read_buffer_task (cl_command_queue command_queue, cl_mem buffer, in
   err = clEnqueueReadBuffer (command_queue, buffer, CL_TRUE, 0, sizeof (int) * length, array, 0, NULL, NULL);
 
   if (err == CL_SUCCESS) {
-    printf (ANSI_COLOR_YELLOW "Buffer" ANSI_COLOR_RESET " %s " ANSI_COLOR_YELLOW " Copiado Exitosamente Desde El Dispositivo\n\n" ANSI_COLOR_RESET, name);
+    printf (ANSI_COLOR_YELLOW "Buffer" ANSI_COLOR_RESET " %s " ANSI_COLOR_YELLOW " Copiado Exitosamente Desde El Dispositivo\n" ANSI_COLOR_RESET, name);
   } else {
-    printf (ANSI_COLOR_RED "Error Al Copiar Buffer Desde El Dispositivo\n\n" ANSI_COLOR_RESET);
+    printf (ANSI_COLOR_RED "Error Al Copiar Buffer Desde El Dispositivo\n" ANSI_COLOR_RESET);
   }
 }
 
@@ -251,9 +251,9 @@ char * readKernel(void) {
   source_length[0] = ftell(fp);
 
   if (source_length[0] == 0) {
-    printf("Kernel.cl is empty\n");
+    printf(ANSI_COLOR_RED "Kernel.cl is empty\n" ANSI_COLOR_RESET);
   } else {
-    printf("Kernel.cl length: %zu bytes\n", source_length[0]);
+    printf(ANSI_COLOR_YELLOW "Kernel.cl length:" ANSI_COLOR_RESET  " %zu" ANSI_COLOR_YELLOW " bytes\n" ANSI_COLOR_RESET, source_length[0]);
   }
 
   char *source = (char*) calloc(source_length[0] + 1, 1);
@@ -266,4 +266,8 @@ char * readKernel(void) {
   printf(ANSI_COLOR_GREEN "Kernel.cl Read\n" ANSI_COLOR_RESET);
 
   return source;
+}
+
+void separator (void) {
+  printf("\n");
 }

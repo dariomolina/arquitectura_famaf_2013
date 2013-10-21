@@ -46,12 +46,15 @@ int main (void) {
   a_in = create_buffer(N*N, context, a);
   b_in = create_buffer(N*N, context, b);
   c_out = create_buffer(N*N, context, c);
+  separator ();
   set_kernel_argument (kernel, a_in, 0, a);
   set_kernel_argument (kernel, b_in, 1, b);
   set_kernel_argument (kernel, c_out, 2, c);
+  separator ();
   command_queue = create_command_queue (context, device_id);
   enqueue_write_buffer_task (command_queue, a_in, N*N, a_mem, a);
   enqueue_write_buffer_task (command_queue, b_in, N*N, b_mem, b);
+  separator ();
   enqueue_kernel_execution (command_queue, kernel, N*N);
   enqueue_read_buffer_task (command_queue, c_out, N*N,  c_mem, c);
 

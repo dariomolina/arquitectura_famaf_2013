@@ -47,3 +47,5 @@ void enqueue_read_buffer_task (cl_command_queue command_queue, cl_mem buffer, in
 char * readKernel(void);
 
 void separator (void);
+
+void matrix_multip (int * A, int * B, const char* name);

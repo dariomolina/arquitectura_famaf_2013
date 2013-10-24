@@ -1,8 +1,8 @@
 __kernel
-void matrix_multip (__global int *A, __global int *B, __global int *C) {
-  int dim = 3;
-  int fila = get_global_id(1);
-  int columna = get_global_id(0);
+void matrix_multip (__global int *A, __global int *B , __global int *C, __global int *N) {
+  int dim = N[0];
+  int fila = get_global_id(0);
+  int columna = get_global_id(1);
 
   int sum = 0;
 
@@ -10,5 +10,5 @@ void matrix_multip (__global int *A, __global int *B, __global int *C) {
     sum += A[fila*dim+i] * B[i*dim+columna];
   }
 
-  C[fila * dim+columna] = sum;
+  C[fila*dim+columna] = sum;
 }

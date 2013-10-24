@@ -113,7 +113,7 @@ cl_kernel create_kernel (cl_program program) {
   cl_int err;
   cl_kernel kernel;
 
-  kernel = clCreateKernel (program, "matrix_multip", &err);
+  kernel = clCreateKernel (program, "matrix_multip",&err);
 
   if (err == CL_SUCCESS) {
     printf (ANSI_COLOR_GREEN "Kernel Creado Exitosamente\n\n" ANSI_COLOR_RESET);
@@ -270,4 +270,23 @@ char * readKernel(void) {
 
 void separator (void) {
   printf("\n");
+}
+
+void matrix_multip (int * A, int * B, const char* name) {
+  int sum = 0;
+  int *C = (int *) calloc (N*N, sizeof (int));
+
+  // Inicializacion
+  for (int i=0; i < N*N; i++){
+    C[i] = 0;
+  }
+
+  for (int i=0; i < N; i++) {
+    for (int j=0; j < N; j++) {
+      for (int k=0; k < N; k++) {
+        C[i*N+j] += A[i*N+k] * B[k*N+j];
+      }
+    }
+  }
+  print_memory_object (C, N*N, name);
 }

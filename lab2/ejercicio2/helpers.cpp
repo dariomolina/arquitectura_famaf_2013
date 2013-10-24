@@ -144,9 +144,9 @@ int* create_memory_object (int length, const char *name) {
   array = (int *) calloc (length, sizeof (int));
 
   if (array != NULL) {
-    printf (ANSI_COLOR_GREEN "Arreglo De Datos Creado Exitosamente\n" ANSI_COLOR_RESET);
+    printf (ANSI_COLOR_GREEN "Matriz Creada Exitosamente\n" ANSI_COLOR_RESET);
   } else {
-    printf (ANSI_COLOR_RED "Error Al Crear Arreglo De Datos\n" ANSI_COLOR_RESET);
+    printf (ANSI_COLOR_RED "Error Al Crear Matriz\n" ANSI_COLOR_RESET);
   }
 
   for (i = 0; i < length; i++) {
@@ -214,10 +214,10 @@ void enqueue_write_buffer_task (cl_command_queue command_queue, cl_mem buffer, i
 
 void enqueue_kernel_execution (cl_command_queue command_queue, cl_kernel kernel, int length) {
   cl_int err;
-  size_t local = length;
-  size_t global = length;
+  size_t local[2] = {1, 1};
+  size_t global[2] = {length, length};
 
-  err = clEnqueueNDRangeKernel (command_queue, kernel, 1, NULL, &global, &local, 0, NULL, NULL);
+  err = clEnqueueNDRangeKernel (command_queue, kernel, 2, NULL, global, local, 0, NULL, NULL);
 
   if (err == CL_SUCCESS) {
     printf (ANSI_COLOR_GREEN "Kernel Enviado Al Dispositivo Exitosamente\n\n" ANSI_COLOR_RESET);

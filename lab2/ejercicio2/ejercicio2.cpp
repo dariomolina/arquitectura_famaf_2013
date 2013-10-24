@@ -55,7 +55,7 @@ int main (void) {
   enqueue_write_buffer_task (command_queue, a_in, N*N, a_mem, a);
   enqueue_write_buffer_task (command_queue, b_in, N*N, b_mem, b);
   separator ();
-  enqueue_kernel_execution (command_queue, kernel, N*N);
+  enqueue_kernel_execution (command_queue, kernel, N);
   enqueue_read_buffer_task (command_queue, c_out, N*N,  c_mem, c);
 
   print_memory_object (c_mem, N*N, c);

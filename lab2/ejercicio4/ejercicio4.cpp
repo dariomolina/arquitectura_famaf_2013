@@ -1,6 +1,6 @@
 #include "helpers.h"
 
-#define NUM_STEPS 1000
+#define NUM_STEPS 1024
 
 int main (void) {
   float *sum;
@@ -50,11 +50,7 @@ int main (void) {
      device to the host memory */
   enqueue_read_buffer_task (command_queue, sum_buffer, NUM_STEPS, sum, "sum");
 
-  float result = 0.0;
-  for (int i = 0; i < NUM_STEPS; i++) {
-    result += sum[i];
-  }
+  printf (ANSI_COLOR_CYAN "\nAproximación de PI: %.10lf\n\n" ANSI_COLOR_RESET, sum[0] / NUM_STEPS);
 
-  printf (ANSI_COLOR_CYAN "\nAproximación de PI: %.10lf\n\n" ANSI_COLOR_RESET, result / NUM_STEPS);
   return 0;
 }

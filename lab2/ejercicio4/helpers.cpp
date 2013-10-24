@@ -113,7 +113,7 @@ cl_kernel create_kernel (cl_program program) {
   cl_int err;
   cl_kernel kernel;
 
-  kernel = clCreateKernel (program, "function", &err);
+  kernel = clCreateKernel (program, "reduce", &err);
 
   if (err == CL_SUCCESS) {
     printf (ANSI_COLOR_GREEN "Kernel creado exitosamente\n" ANSI_COLOR_RESET);

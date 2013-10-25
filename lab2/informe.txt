@@ -1,0 +1,98 @@
+ARQUITECTURA DE COMPUTADORAS 2013
+  Laboratorio 2: OpenCL
+
+Integrantes:
+  Alejandro José Naser Pastoriza | alejnaser@gmail.com
+  Nicolás Daniel Gómez           | nicolasdanielgomez@gmail.com
+  Mariano Jesús Mateuci          | mjmateuci@gmail.com
+
+Informe:
+  El presente informe describe la implementación y decisiones de diseño tomadas
+respecto de paralelizar procedimientos en OpenCL.
+
+Estructura del Código:
+  Se opto por modularizar el codigo con la finalidad de facilitar su
+  entendimiento y hacer mas explicito el flujo de trabajo en OpenCL.
+
+  La estructura de organizacion comprende los siguientes archivos:
+
+    * ejercicioN.cpp: Contiene la función main de cada ejercicio en la
+    cual se realizan llamadas a funciones auxiliares que estan
+    implementadas en otro modulo, lo cual favorece a que se tenga un
+    codigo mas limpio y comprensible.
+
+    * helpers.h: Es el archivo header, contiene el prototipos de las
+    funciones que se implementan en helpers.
+
+    * helpers.cpp: Contiene las definiciones de las funciones auxiliares
+    que seran utilizadas en el main las cuales internamente hacen
+    llamadas a las funciones de la libreria OpenCL. En este modulo
+    incluimos la funcion ReadKernel entregada por la catedra.
+
+    * kernel.cl: Contiene el código Kernel que implementa la solucion
+    especifica de cada problema, excepto en el caso del ejercicio el 1
+    el cual se trata solamente de obtener informacion acerca de la
+    plataforma y los dispositivos disponibles.
+
+Diseño:
+  Respecto al diseño no habia margen para tomar demasiadas decisiones
+  dado que la esctructura que de un codigo OpenCL tiende a ser
+  generica, esto significa que una vez que se implemento un codigo
+  utilizando OpenCL para resolver un problema con una cantidad minima de cambios se puede
+  implementar la solucion para otro problema.
+
+  El esquema con el que se trabaja consta de los siguientes pasos:
+    * Seleccionar una plataforma.
+    * Seleccionar un dispositivo.
+    * Crear un contexto.
+    * Compilar el kernel en los dispositivos.
+    * Crear una cola de comandos.
+    * Enviar datos a los dispositivos.
+    * Ejecutar comandos en los dispositivos.
+    * Leer datos desde los dispositivos.
+    * Liberar los dispositivos utilizados.
+
+Problemas enfrentados:
+  * Paralelismo:
+    El principal problema enfrentado fue el hecho de tener que pensar en
+    el paralelismo a la hora de implementar un algoritmo, ya que hasta
+    el momento la gran mayoria de implementaciones que hemos realizados
+    fueron de manera serial.
+
+  * Ejercicio 2:
+    Nuestra solucion para el problema de la multiplicacion de matrices
+    consiste en calcular en paralelo el resultado de un elemento de la
+    matriz resultado, la desventaja de esto es que en cada calculo hay un ciclo
+    for en el cual se suman los resultados necesarios para obtener un
+    elemento de la fila de la matriz resultado, es decir, como la
+    multiplicacion se realiza entre filas de la matriz A y la columnas
+    de la matriz B es necesario sumar los resultados de las N
+    multiplicaciones para obtener un elemento de la matriz resultado.
+    Como posible mejora podriamos mencionar que aqui tambien se podria
+    implementar la reduccion.
+
+  * Ejercicio 4:
+    Otro problema que tuvimos que enfrentar fue tener que dar una
+    solucion que pueda ser capaz de explotar el paralelismo para el
+    ejercicio 4 en el que cual se debia calcular una aproximacion para
+    pi, la tecnica utilizada para resolver el problema fue la reduccion
+    que consiste de una combinación de todos los elementos de un vector
+     en un valor único, utilizando para ello algún tipo de operador
+    asociativo, en nuestro caso la suma.
+
+    Respecto a posibles mejoras u optimizaciones, creemos que el
+    paralelismo conseguido es el optimo y no notamos ninguna mejora posible.
+
+Conclusión:
+  El laboratorio resulto muy interesante, nos aporto muchas nociones
+  de la programacion concurrente y el paralelismo, se pudo apreciar a
+  gran escala como es el flujo de trabajo de OpenCL y las ventajas que
+  ofrece el mismo.
+  Tuvimos la experiencia de instalar OpenCL en nuestras maquinas,
+  pudimos consultar datos a los dispositivos que tenemos y tambien
+  ejecutar los kernels que implementamos, esto fue sumamente
+  interesante ya que nos permitio conocer detalles acerca de un tema
+  que desconociamos y a su vez, nos va a permitir que podamos aprovechar
+  nuestros GPU para ejecutar codigo y para adquirir experiencia dentro
+  de un campo reciente e interesante como lo son el GPGPU y los
+  sistemas heterogeneos.

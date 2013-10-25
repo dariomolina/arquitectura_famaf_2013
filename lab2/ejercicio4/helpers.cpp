@@ -56,6 +56,8 @@ cl_device_id create_device (cl_platform_id platform_id) {
   cl_uint err;
   cl_device_id device_id;
 
+  /* after the call the pointer given as fourth parameter will
+     contain the id number of the first device on the platform specified by platform_id */
   err = clGetDeviceIDs (platform_id, CL_DEVICE_TYPE_ALL, 1, &device_id, NULL);
 
   if (err == CL_SUCCESS) {
@@ -71,6 +73,8 @@ cl_context create_context (cl_device_id device_id) {
   cl_int err;
   cl_context context;
 
+  /* Creates and returns a new context that will contain the devices list
+     given in the third parameter */
   context = clCreateContext (NULL, 1, &device_id, NULL, NULL, &err);
 
   if (err == CL_SUCCESS) {
@@ -86,6 +90,8 @@ cl_program create_program (cl_context context, const char* program_source) {
   cl_int err;
   cl_program program;
 
+  /* Creates and returns a new program based on the source given as
+   third parameter */
   program = clCreateProgramWithSource (context, 1, (const char **) &program_source, NULL, &err);
 
   if (err == CL_SUCCESS) {
@@ -100,6 +106,7 @@ cl_program create_program (cl_context context, const char* program_source) {
 void build_program (cl_program program, cl_device_id device_id) {
   cl_int err;
 
+  /* Build the program in the device given */
   err = clBuildProgram (program, 1, &device_id, NULL, NULL, NULL);
 
   if (err == CL_SUCCESS){
@@ -113,6 +120,7 @@ cl_kernel create_kernel (cl_program program) {
   cl_int err;
   cl_kernel kernel;
 
+  /* Creates a kernel object */
   kernel = clCreateKernel (program, "reduce", &err);
 
   if (err == CL_SUCCESS) {
@@ -128,6 +136,8 @@ cl_mem create_buffer (cl_context context, const char* name, int size) {
   cl_int err;
   cl_mem sum_buffer;
 
+  /* Creates a OpenCL buffer in the context with the privileges given
+     as second parameter */
   sum_buffer = clCreateBuffer (context, CL_MEM_READ_WRITE, size * sizeof (float), NULL, &err);
 
   if (err == CL_SUCCESS){
@@ -142,6 +152,8 @@ cl_mem create_buffer (cl_context context, const char* name, int size) {
 void set_kernel_argument (cl_kernel kernel, cl_mem arg, int arg_num, const char * arg_name) {
   cl_int err;
 
+  /* Used to set the argument value for a specific argument of a
+     kernel */
   err = clSetKernelArg (kernel, arg_num, sizeof (cl_mem), &arg);
 
   if (err == CL_SUCCESS) {
@@ -155,6 +167,7 @@ cl_command_queue create_command_queue (cl_context context, cl_device_id device_i
   cl_int err;
   cl_command_queue command_queue;
 
+  /* Create a command-queue on a specific device given as second parameter */
   command_queue = clCreateCommandQueue (context, device_id, 0, &err);
 
   if (err == CL_SUCCESS) {
@@ -171,6 +184,7 @@ void enqueue_kernel_execution (cl_command_queue command_queue, cl_kernel kernel,
   size_t local = num_steps;
   size_t global = num_steps;
 
+  /* Enqueues a command to execute a kernel on a device */
   err = clEnqueueNDRangeKernel (command_queue, kernel, 1, NULL, &global, &local, 0, NULL, NULL);
 
   if (err == CL_SUCCESS) {
@@ -182,6 +196,8 @@ void enqueue_kernel_execution (cl_command_queue command_queue, cl_kernel kernel,
 
 void enqueue_read_buffer_task (cl_command_queue command_queue, cl_mem buffer, int num_steps, float *sum, const char* name) {
   cl_int err;
+
+  /* Enqueue commands to read from a buffer object from host memory */
   err = clEnqueueReadBuffer (command_queue, buffer, CL_TRUE, 0, num_steps * sizeof (float), sum, 0, NULL, NULL);
 
   if (err == CL_SUCCESS) {

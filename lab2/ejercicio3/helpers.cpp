@@ -56,6 +56,9 @@ cl_device_id create_device (cl_platform_id platform_id) {
   cl_uint err;
   cl_device_id device_id;
 
+
+  /* after the call the pointer given as fourth parameter will
+     contain the id number of the first device on the platform specified by platform_id */
   err = clGetDeviceIDs (platform_id, CL_DEVICE_TYPE_ALL, 1, &device_id, NULL);
 
   if (err == CL_SUCCESS) {
@@ -71,6 +74,8 @@ cl_context create_context (cl_device_id device_id) {
   cl_int err;
   cl_context context;
 
+  /* Creates and returns a new context that will contain the devices list
+     given in the third parameter */
   context = clCreateContext (NULL, 1, &device_id, NULL, NULL, &err);
 
   if (err == CL_SUCCESS) {
@@ -86,6 +91,8 @@ cl_program create_program (cl_context context, const char* program_source) {
   cl_int err;
   cl_program program;
 
+  /* Creates and returns a new program based on the source given as
+   third parameter */
   program = clCreateProgramWithSource (context, 1, (const char **) &program_source, NULL, &err);
 
   if (err == CL_SUCCESS) {
@@ -100,6 +107,7 @@ cl_program create_program (cl_context context, const char* program_source) {
 void build_program (cl_program program, cl_device_id device_id) {
   cl_int err;
 
+  /* Build the program in the device given */
   err = clBuildProgram (program, 1, &device_id, NULL, NULL, NULL);
 
   if (err == CL_SUCCESS){
@@ -113,6 +121,7 @@ cl_kernel create_kernel (cl_program program) {
   cl_int err;
   cl_kernel kernel;
 
+  /* Creates a kernel object */
   kernel = clCreateKernel (program, "function", &err);
 
   if (err == CL_SUCCESS) {
@@ -127,6 +136,7 @@ cl_kernel create_kernel (cl_program program) {
 void print_memory_object (int *array, int length, const char *name) {
   int i = 0;
 
+  /* Prints array on the screen */
   printf ("%s = [", name);
   for (i = 0; i < length - 1; i++) {
     printf ("%d, ", array[i]);
@@ -138,6 +148,7 @@ int* create_memory_object (int length, const char *name) {
   int i;
   int *array;
 
+  /* Allocate memory for the array */
   array = (int *) calloc (length, sizeof (int));
 
   if (array != NULL) {
@@ -146,6 +157,7 @@ int* create_memory_object (int length, const char *name) {
     printf (ANSI_COLOR_RED "Error al crear arreglo de datos\n" ANSI_COLOR_RESET);
   }
 
+  /* Initialize the array with random numbers */
   for (i = 0; i < length; i++) {
     array[i] = (int) ((10.0 * rand()) / RAND_MAX);
   }
@@ -159,6 +171,8 @@ cl_mem create_buffer (int length, cl_context context, const char* name) {
   cl_int err;
   cl_mem array;
 
+  /* Creates a OpenCL buffer in the context with the privileges given
+     as second parameter */
   array = clCreateBuffer (context, CL_MEM_READ_WRITE, sizeof (int) * length, NULL, &err);
 
   if (err == CL_SUCCESS){
@@ -173,6 +187,8 @@ cl_mem create_buffer (int length, cl_context context, const char* name) {
 void set_kernel_argument (cl_kernel kernel, cl_mem arg, int arg_num, const char * arg_name) {
   cl_int err;
 
+  /* Used to set the argument value for a specific argument of a
+     kernel */
   err = clSetKernelArg (kernel, arg_num, sizeof (cl_mem), &arg);
 
   if (err == CL_SUCCESS) {
@@ -186,6 +202,7 @@ cl_command_queue create_command_queue (cl_context context, cl_device_id device_i
   cl_int err;
   cl_command_queue command_queue;
 
+  /* Create a command-queue on a specific device given as second parameter */
   command_queue = clCreateCommandQueue (context, device_id, 0, &err);
 
   if (err == CL_SUCCESS) {
@@ -200,6 +217,7 @@ cl_command_queue create_command_queue (cl_context context, cl_device_id device_i
 void enqueue_write_buffer_task (cl_command_queue command_queue, cl_mem buffer, int length, int *array, const char* name) {
   cl_int err;
 
+  /* Enqueue commands to write to a buffer object from host memory */
   err = clEnqueueWriteBuffer (command_queue, buffer, CL_TRUE, 0, sizeof (int) * length, array, 0, NULL, NULL);
 
   if (err == CL_SUCCESS) {
@@ -215,6 +233,7 @@ cl_event enqueue_kernel_execution (cl_command_queue command_queue, cl_kernel ker
   size_t global = length;
   cl_event event;
 
+  /* Enqueues a command to execute a kernel on a device */
   err = clEnqueueNDRangeKernel (command_queue, kernel, 1, NULL, &global, &local, num_events_in_wait_list, event_wait_list, &event);
 
   if (err == CL_SUCCESS) {
@@ -228,6 +247,8 @@ cl_event enqueue_kernel_execution (cl_command_queue command_queue, cl_kernel ker
 
 void enqueue_read_buffer_task (cl_command_queue command_queue, cl_mem buffer, int length, int *array, const char* name) {
   cl_int err;
+
+  /* Enqueue commands to read from a buffer object from host memory */
   err = clEnqueueReadBuffer (command_queue, buffer, CL_TRUE, 0, sizeof (int) * length, array, 0, NULL, NULL);
 
   if (err == CL_SUCCESS) {

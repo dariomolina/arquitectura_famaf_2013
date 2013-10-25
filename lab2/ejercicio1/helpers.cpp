@@ -134,6 +134,7 @@ void devices_information (cl_device_id *devices_ids, cl_uint devices_number) {
   int i = 0, maxp_device_index = 0;
   cl_ulong max_performance = 0, performance = 0;
 
+  /* Prints information about the device */
   for (i = 0; i < devices_number; i++) {
     performance = device_information (devices_ids[i], i);
 

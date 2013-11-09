@@ -36,9 +36,7 @@ void reset_sources (int heat_sources, int my_rank, int matrix_size, int comm_sz,
 }
 
 void transform_matrix (float matrix[], int matrix_size, int comm_sz,
-                       int my_rank, int heat_sources, int heats_x[],
-                       int heats_y[], float heats_temperatures[],
-                       float top_row[], float bottom_row[]) {
+                       int my_rank, float top_row[], float bottom_row[]) {
   float accum = 0, *temp = NULL;
   int row = 0, col = 0, operands = 0, fragment_size = 0, i = 0;
 

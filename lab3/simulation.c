@@ -104,9 +104,8 @@ int main (void) {
     }
 
     /* Recursive formula applied to modify the matrix */
-    transform_matrix (matrix, matrix_size, comm_sz, my_rank,
-                      heat_sources, heats_x, heats_y, heats_temperatures,
-                      top_row, bottom_row);
+    transform_matrix (matrix, matrix_size, comm_sz, my_rank, top_row,
+                      bottom_row);
   }
 
   /* Process 0 is in charge of printing the whole matrix to STDOUT,

@@ -15,11 +15,14 @@ void print_matrix (float *matrix, int rows_count, int row_size) {
 }
 
 int main (void) {
-  int iterations = 0, matrix_size = 0, heat_sources = 0, j = 0;
-  int err = 0, comm_sz = 0, my_rank = 0, local_n = 0, index = 0;
+  int iterations = 0, matrix_size = 0, heat_sources = 0,
+    operands = 0, row = 0, err = 0, comm_sz = 0, my_rank = 0,
+    local_n = 0, index = 0, i = 0, j = 0, col = 0,
+    *heats_x = NULL, *heats_y = NULL;
 
-  int *heats_x = NULL, *heats_y = NULL;
-  float *heats_temperatures = NULL, *matrix = NULL;
+  float *heats_temperatures = NULL, *matrix = NULL,
+    *top_row = NULL, *bottom_row = NULL, accum = 0.0,
+    *temp = NULL;
 
   err = MPI_Init (NULL, NULL);
   err |= MPI_Comm_size (MPI_COMM_WORLD, &comm_sz);
@@ -53,7 +56,7 @@ int main (void) {
 
   if (my_rank == 0) {
     for (j = 0; j < heat_sources; j++)
-      scanf ("%d %d %f", heats_x + j, heats_y + j, heats_temperatures + j);
+      scanf ("%d %d %f", heats_y + j, heats_x + j, heats_temperatures + j);
   }
 
   /* Only process 0 get input from STDIN, so broadcast info obtained */
@@ -66,6 +69,7 @@ int main (void) {
   /* Allocate memory for portion of matrix to be processed by
    current process */
   matrix = (float *) calloc (local_n, sizeof (float));
+  temp = (float *) calloc (local_n, sizeof (float));
 
   /* Identify heat sources for current process */
   for (j = 0; j < heat_sources; j++) {
@@ -76,8 +80,67 @@ int main (void) {
     }
   }
 
+  top_row = (float *) calloc (matrix_size, sizeof (float));
+  assert (top_row != NULL);
+  bottom_row = (float *) calloc (matrix_size, sizeof (float));
+  assert (bottom_row != NULL);
+
   for (j = 0; j < iterations; j++) {
-    /* calculo de cada iteracion */
+    if (my_rank != 0) {
+      MPI_Send (matrix, matrix_size, MPI_FLOAT, my_rank - 1, 0,
+                MPI_COMM_WORLD);
+      MPI_Recv (top_row, matrix_size, MPI_FLOAT, my_rank - 1, 0,
+                MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    }
+    if (my_rank != comm_sz - 1) {
+      MPI_Recv (bottom_row, matrix_size, MPI_FLOAT, my_rank + 1, 0,
+                MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+      MPI_Send (matrix + (matrix_size / comm_sz - 1) * matrix_size,
+                matrix_size, MPI_FLOAT, my_rank + 1, 0, MPI_COMM_WORLD);
+    }
+    for (row = 0; row < matrix_size / comm_sz; row++) {
+      for (col = 0; col < matrix_size; col++) {
+        accum = matrix[row * matrix_size + col];
+        operands = 1;
+        if (row != 0) {
+          accum += matrix[(row - 1) * matrix_size + col];
+          operands++;
+        }
+        if (row != matrix_size / comm_sz - 1) {
+          accum += matrix[(row + 1) * matrix_size + col];
+          operands++;
+        }
+        if (col != 0) {
+          accum += matrix[row * matrix_size + col - 1];
+          operands++;
+        }
+        if (col != matrix_size - 1) {
+          accum += matrix[row * matrix_size + col + 1];
+          operands++;
+        }
+        if (row == 0 && my_rank != 0) {
+          accum += top_row[col];
+          operands++;
+        }
+        if (row == matrix_size / comm_sz - 1 && my_rank != comm_sz - 1) {
+          accum += bottom_row[col];
+          operands++;
+        }
+        temp[row * matrix_size + col] = accum / operands;
+      }
+    }
+    for (row = 0; row < matrix_size / comm_sz; row++) {
+      for (col = 0; col < matrix_size; col++) {
+        matrix[row * matrix_size + col] = temp[row * matrix_size + col];
+      }
+    }
+    for (i = 0; i < heat_sources; i++) {
+      if (my_rank * matrix_size / comm_sz <= heats_x[i] &&
+          heats_x[i] < (my_rank + 1) * matrix_size / comm_sz) {
+        index = heats_x[i] * matrix_size + heats_y[i] - my_rank * local_n;
+        matrix[index] = heats_temperatures[i];
+      }
+    }
   }
 
   if (my_rank == 0) {

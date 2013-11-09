@@ -77,14 +77,13 @@ int main (void) {
   assert (top_row != NULL);
   assert (bottom_row != NULL);
 
+  /* Initialize matrices with heat sources */
+  reset_sources (heat_sources, my_rank, matrix_size, comm_sz,
+                 fragment_size, heats_x, heats_y,
+                 heats_temperatures, matrix);
+
   /* Start iterative computation */
   for (j = 0; j < iterations; j++) {
-    /* Every time the matrix is transformed, all heat sources should
-       keep its temperature, and for the first run, it's an initialization */
-    reset_sources (heat_sources, my_rank, matrix_size, comm_sz,
-                   fragment_size, heats_x, heats_y,
-                   heats_temperatures, matrix);
-
     /* Process 0 don't receive a row from a process "above", neither
        it should send its first row */
     if (my_rank != 0) {
@@ -106,6 +105,12 @@ int main (void) {
     /* Recursive formula applied to modify the matrix */
     transform_matrix (matrix, matrix_size, comm_sz, my_rank, top_row,
                       bottom_row);
+
+    /* Every time the matrix is transformed, all heat sources should
+       keep its temperature */
+    reset_sources (heat_sources, my_rank, matrix_size, comm_sz,
+                   fragment_size, heats_x, heats_y,
+                   heats_temperatures, matrix);
   }
 
   /* Process 0 is in charge of printing the whole matrix to STDOUT,

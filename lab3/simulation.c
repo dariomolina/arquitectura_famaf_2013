@@ -29,6 +29,10 @@ int main (void) {
     scanf ("%d", &heat_sources);
   }
 
+  /* Adjust matrix_size to be a multiple of comm_sz */
+  if (matrix_size % comm_sz != 0)
+    matrix_size += comm_sz - matrix_size % comm_sz;
+
   /* Process 0 broadcast the input parsed to all processes,
    each process should know the matrix size for different
    calculations, how many iterations each process should perform,

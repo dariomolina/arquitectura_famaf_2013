@@ -40,7 +40,7 @@ float *transform_matrix (float matrix[], int matrix_size, int comm_sz,
                          int heats_y[], float heats_temperatures[],
                          float top_row[], float bottom_row[]) {
   float accum, *temp = NULL;
-  int row = 0, col = 0, operands = 0, fragment_size = 0, i = 0, index = 0;
+  int row = 0, col = 0, operands = 0, fragment_size = 0, i = 0;
 
   /* Each process work over a fragment of the whole matrix,
      the matrix is partitioned on equally-sized portions */
@@ -81,6 +81,7 @@ float *transform_matrix (float matrix[], int matrix_size, int comm_sz,
     }
   }
 
+  /* Replace old matrix values with the new ones */
   for (row = 0; row < matrix_size / comm_sz; row++) {
     for (col = 0; col < matrix_size; col++) {
       matrix[row * matrix_size + col] = temp[row * matrix_size + col];

@@ -2,14 +2,14 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <mpi.h>
+#include "helpers.h"
 
 int main (void) {
   int iterations = 0, matrix_size = 0, heat_sources = 0,
-    err = 0, comm_sz = 0, my_rank = 0, fragment_size = 0,
-    j = 0, *heats_x = NULL, *heats_y = NULL;
-
-  float *heats_temperatures = NULL, *matrix = NULL,
-    *top_row = NULL, *bottom_row = NULL;
+    err = 0, comm_sz = 0, my_rank = 0, fragment_size = 0, j = 0;
+  float *matrix = NULL, *top_row = NULL, *bottom_row = NULL;
+  double time_init = 0, time_end = 0;
+  heat_t *heats = NULL;
 
   /* Initialize MPI */
   err = MPI_Init (NULL, NULL);
@@ -21,6 +21,8 @@ int main (void) {
   /* If there's an error return with error code */
   if (err != 0)
     return -1;
+
+  time_init = MPI_Wtime ();
 
   /* Only process 0 parse STDIN */
   if (my_rank == 0) {
@@ -47,24 +49,20 @@ int main (void) {
 
   /* Each process will have a copy of the heats data, this data
      includes x coordinates, y coordinates & temperatures */
-  heats_x = (int *) calloc (heat_sources, sizeof (int));
-  heats_y = (int *) calloc (heat_sources, sizeof (int));
-  heats_temperatures = (float *) calloc (heat_sources, sizeof (float));
+  Declare_Heat_T();
 
-  assert (heats_x != NULL);
-  assert (heats_y != NULL);
-  assert (heats_temperatures != NULL);
+  heats = (heat_t *) calloc (heat_sources, sizeof (heat_t));
+  assert (heats != NULL);
 
   /* Process 0 parse heats sources data */
   if (my_rank == 0) {
     for (j = 0; j < heat_sources; j++)
-      scanf ("%d %d %f", heats_y + j, heats_x + j, heats_temperatures + j);
+      scanf ("%d %d %f", &((heats + j) -> y), &((heats + j) -> x),
+             &((heats + j) -> t));
   }
 
   /* Process 0 broadcast heats sources data */
-  MPI_Bcast (heats_x, heat_sources, MPI_INT, 0, MPI_COMM_WORLD);
-  MPI_Bcast (heats_y, heat_sources, MPI_INT, 0, MPI_COMM_WORLD);
-  MPI_Bcast (heats_temperatures, heat_sources, MPI_FLOAT, 0, MPI_COMM_WORLD);
+  MPI_Bcast (heats, heat_sources, MPI_HEAT_T, 0, MPI_COMM_WORLD);
 
   /* Fragment of the original matrix */
   matrix = (float *) calloc (fragment_size, sizeof (float));
@@ -79,8 +77,7 @@ int main (void) {
 
   /* Initialize matrices with heat sources */
   reset_sources (heat_sources, my_rank, matrix_size, comm_sz,
-                 fragment_size, heats_x, heats_y,
-                 heats_temperatures, matrix);
+                 fragment_size, heats, matrix);
 
   /* Start iterative computation */
   for (j = 0; j < iterations; j++) {
@@ -109,8 +106,7 @@ int main (void) {
     /* Every time the matrix is transformed, all heat sources should
        keep its temperature */
     reset_sources (heat_sources, my_rank, matrix_size, comm_sz,
-                   fragment_size, heats_x, heats_y,
-                   heats_temperatures, matrix);
+                   fragment_size, heats, matrix);
   }
 
   /* Process 0 is in charge of printing the whole matrix to STDOUT,
@@ -129,13 +125,19 @@ int main (void) {
     MPI_Send (matrix, fragment_size, MPI_FLOAT, 0, 0, MPI_COMM_WORLD);
   }
 
+  MPI_Barrier (MPI_COMM_WORLD);
+  time_end = MPI_Wtime ();
+
+  /*
+  if (my_rank == 0)
+    printf ("Tiempo transcurrido = %.2f\n", time_end - time_init);
+  */
+
   /* MPI API is not necessary anymore */
   MPI_Finalize ();
 
   /* Free resources allocated */
-  free (heats_x);
-  free (heats_y);
-  free (heats_temperatures);
+  free (heats);
   free (matrix);
   free (top_row);
   free (bottom_row);

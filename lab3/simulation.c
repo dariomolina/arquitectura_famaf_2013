@@ -8,7 +8,7 @@ int main (void) {
   int iterations = 0, matrix_size = 0, heat_sources = 0,
     err = 0, comm_sz = 0, my_rank = 0, fragment_size = 0, j = 0;
   float *matrix = NULL, *top_row = NULL, *bottom_row = NULL;
-  double time_init = 0, time_end = 0;
+  /* double time_init = 0, time_end = 0; */
   heat_t *heats = NULL;
 
   /* Initialize MPI */
@@ -22,23 +22,23 @@ int main (void) {
   if (err != 0)
     return -1;
 
-  time_init = MPI_Wtime ();
+  /* time_init = MPI_Wtime (); */
 
   /* Only process 0 parse STDIN */
   if (my_rank == 0) {
     scanf ("%d", &matrix_size);
     scanf ("%d", &iterations);
     scanf ("%d", &heat_sources);
+
+    /* Adjust matrix_size to be a multiple of comm_sz */
+    if (matrix_size % comm_sz != 0)
+      matrix_size += comm_sz - matrix_size % comm_sz;
   }
 
-  /* Adjust matrix_size to be a multiple of comm_sz */
-  if (matrix_size % comm_sz != 0)
-    matrix_size += comm_sz - matrix_size % comm_sz;
-
   /* Process 0 broadcast the input parsed to all processes,
-   each process should know the matrix size for different
-   calculations, how many iterations each process should perform,
-   and how many heat sources there exists */
+     each process should know the matrix size for different
+     calculations, how many iterations each process should perform,
+     and how many heat sources there exists */
   MPI_Bcast (&matrix_size, 1, MPI_INT, 0, MPI_COMM_WORLD);
   MPI_Bcast (&iterations, 1, MPI_INT, 0, MPI_COMM_WORLD);
   MPI_Bcast (&heat_sources, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -93,10 +93,10 @@ int main (void) {
     /* Process comm_sz - 1 don't receive a row from a process "below", neither
        it should send its last row */
     if (my_rank != comm_sz - 1) {
-      MPI_Recv (bottom_row, matrix_size, MPI_FLOAT, my_rank + 1, 0,
-                MPI_COMM_WORLD, MPI_STATUS_IGNORE);
       MPI_Send (matrix + (matrix_size / comm_sz - 1) * matrix_size,
                 matrix_size, MPI_FLOAT, my_rank + 1, 0, MPI_COMM_WORLD);
+      MPI_Recv (bottom_row, matrix_size, MPI_FLOAT, my_rank + 1, 0,
+                MPI_COMM_WORLD, MPI_STATUS_IGNORE);
     }
 
     /* Recursive formula applied to modify the matrix */
@@ -126,10 +126,10 @@ int main (void) {
   }
 
   MPI_Barrier (MPI_COMM_WORLD);
-  time_end = MPI_Wtime ();
+  /* time_end = MPI_Wtime (); */
 
   /*
-  if (my_rank == 0)
+    if (my_rank == 0)
     printf ("Tiempo transcurrido = %.2f\n", time_end - time_init);
   */
 

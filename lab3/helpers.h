@@ -10,6 +10,8 @@ typedef struct s_heat_t {
 
 MPI_Datatype MPI_HEAT_T;
 
+void Declare_Heat_T (void);
+
 void print_matrix (float *matrix, int rows_count, int row_size);
 
 void reset_sources (int heat_sources, int my_rank, int matrix_size,
